@@ -1,0 +1,17 @@
+# Variáveis de ambiente
+.env
+
+# Checkpoint de ipynbs
+notebooks/
+.ipynb_checkpoints/
+
+# Arquivos de módulos python e cache
+__pycache__
+.pyc
+*.egg-info/
+.vscode
+build/
+dist/
+
+# Arquivos de output
+examples/output/
