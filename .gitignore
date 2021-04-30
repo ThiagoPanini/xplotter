@@ -2,7 +2,6 @@
 .env
 
 # Checkpoint de ipynbs
-notebooks/
 .ipynb_checkpoints/
 
 # Arquivos de módulos python e cache
