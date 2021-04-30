@@ -100,45 +100,45 @@ def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
 
 def plot_donut_chart(df, col, **kwargs):
     """
-    Função responsável por plotar um gráfico de rosca customizado para uma determinada coluna da base
+    Plots a custom donut chart for a specific column
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col: nome da coluna a ser analisada [type: string]
-    :param **kwargs: parâmetros adicionais da função
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg circle_radius: raio do círculo central do gráfico [type: float, default=0.8]
-        :arg circle_radius_color: cor do círculo central do gráfico [type: string, default='white']
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg top: índice de filtro das top categorias a serem plotadas [type: int]
-        :arg colors: lista de cores para aplicação na plotagem [type: list]
-        :arg text: texto central do gráfico de rosca [type: string, default=f'Total: \n{sum(values)}']
-        :arg title: título do gráfico [type: string, default=f'Gráfico de Rosca para a Variável ${col}$']
-        :arg autotexts_size: dimensão do rótulo do valor numérico do gráfico [type: int, default=14]
-        :arg autotexts_color: cor do rótulo do valor numérico do gráfico [type: int, default='black]
-        :arg texts_size: dimensão do rótulo do label [type: int, default=14]
-        :arg texts_color: cor do rótulo do label [type: int, default='black']
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_donutchart.png']
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col: column name to be plotted [type: string]
+    :param **kwargs: additional parameters
+        :arg figsize: figure dimension [type: tuple, default=(8, 8)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg circle_radius: central circle radius of the chart [type: float, default=0.8]
+        :arg circle_radius_color: central circle color of the chart [type: string, default='white']
+        :arg label_names: custom labels [type: dict, default=value_counts().index]
+        :arg top: filter the top N categories on plot [type: int]
+        :arg colors: color list for customizing the chart [type: list]
+        :arg text: text string to be put on central circle of the chart [type: string, default=f'Total: \n{sum(values)}']
+        :arg title: chart title [type: string, default=f'Donut Chart for Feature ${col}$']
+        :arg autotexts_size: label size from the numerical value [type: int, default=14]
+        :arg autotexts_color: label color from the numerical valueo [type: int, default='black]
+        :arg texts_size: label size from the chart [type: int, default=14]
+        :arg texts_color: label color from the chart [type: int, default='black']
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}_donutchart.png']
     
-    Retorno
+    Return
     -------
-    Essa função não retorna nenhum parâmetro além da plotagem customizada do gráfico de rosca
+    This function returns nothing besides the custom donut chart graphic
 
-    Aplicação
+    Application
     ---------
     plot_donut_chart(df=df, col='categorical_column', label_names={1: 'Classe 1', 2: 'Classe 2'})
     """
     
-    # Validando presença da coluna na base
+    # Validating column name on the given dataset
     if col not in df.columns:
-        print(f'Coluna {col} não presente na base')
+        print(f'There is no columns {col} on the given dataset')
         return
 
-    # Retornando vales e labels para plotagem
+    # Returning values and labels for plotting
     counts = df[col].value_counts()
     values = counts.values
     labels = counts.index
@@ -146,50 +146,50 @@ def plot_donut_chart(df, col, **kwargs):
         try:
             labels = labels.map(kwargs['label_names'])
         except Exception as e:
-            print(f'Erro ao mapear o dicionário label_names na coluna {col}. Exception: {e}')
+            print(f'Error on mapping the dictionary label_names on column {col}. Exception: {e}')
 
-    # Verificando filtro de top categorias na análise
+    # Verifying top_n category filter
     if 'top' in kwargs and kwargs['top'] > 0:
         values = values[:-kwargs['top']]
         labels = labels[:-kwargs['top']]
     
-    # Cores para a plotagem
+    # Chart colors
     color_list = ['darkslateblue', 'crimson', 'lightseagreen', 'lightskyblue', 'lightcoral', 'silver']
     colors = kwargs['colors'] if 'colors' in kwargs else color_list[:len(labels)]
 
-    # Parâmetros de plotagem
+    # Plot parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (8, 8)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     circle_radius = kwargs['circle_radius'] if 'circle_radius' in kwargs else 0.8
     circle_radius_color = kwargs['circle_radius_color'] if 'circle_radius_color' in kwargs else 'white'
 
-    # Plotando gráfico de rosca
+    # Plotting the donut chart
     center_circle = plt.Circle((0, 0), circle_radius, color=circle_radius_color)
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     wedges, texts, autotexts = ax.pie(values, labels=labels, colors=colors, startangle=90, autopct=make_autopct(values))
     ax.add_artist(center_circle)
 
-    # Configurando argumentos do texto central
+    # Setting up central text
     text = kwargs['text'] if 'text' in kwargs else f'Total: \n{sum(values)}'
     text_kwargs = dict(size=20, fontweight='bold', va='center')
     ax.text(0, 0, text, ha='center', **text_kwargs)
     
-    # Definindo título
-    title = kwargs['title'] if 'title' in kwargs else f'Gráfico de Rosca para a Variável ${col}$'
+    # Axis title
+    title = kwargs['title'] if 'title' in kwargs else f'Donut Chart for Feature \n{col}'
     ax.set_title(title, size=16, color='dimgrey')
 
-    # Parâmetros de customização do gráfico gerado
+    # Customizing graphic created
     autotexts_size = kwargs['autotexts_size'] if 'autotexts_size' in kwargs else 14
     autotexts_color = kwargs['autotexts_color'] if 'autotexts_color' in kwargs else 'black'
     texts_size = kwargs['texts_size'] if 'texts_size' in kwargs else 14
     texts_color = kwargs['texts_color'] if 'texts_stexts_colorize' in kwargs else 'black'
 
-    # Customizando rótulos
+    # Customizing labels
     plt.setp(autotexts, size=autotexts_size, color=autotexts_color)
     plt.setp(texts, size=texts_size, color=texts_color)
 
-    # Verificando salvamento da imagem
+    # Saving image
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_donutchart.png'
