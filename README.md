@@ -18,3 +18,9 @@
 <br/>
 
 Python library created for making the Exploratory Data Analysis process so much easier! With `xplotter`, data scientists or data analysists can use a vast number of functions for plotting, customizing and extracting insights from data with very few lines of codes. The exploratory step is, at least, a key step on every data project and it's very important to understand your data before take any action. The use cases are almost infinity!
+
+
+<div align="center">
+  <strong><i> Work in progress </i></strong>
+</div>
+<br/>
