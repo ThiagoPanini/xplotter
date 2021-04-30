@@ -10,7 +10,7 @@
 <div align="center">  
   
   ![Release](https://img.shields.io/badge/release-ok-brightgreen)
-  [![PyPI](https://img.shields.io/pypi/v/filescope?color=blueviolet)](https://pypi.org/project/xplotter/)
+  [![PyPI](https://img.shields.io/pypi/v/xplotter?color=blueviolet)](https://pypi.org/project/xplotter/)
   ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/xplotter?color=green)
   ![PyPI - Status](https://img.shields.io/pypi/status/xplotter)
 
