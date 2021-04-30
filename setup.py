@@ -37,19 +37,21 @@ reqs = [str(ir.req) for ir in install_reqs]"""
 # Criando setup
 setup(
     name='xplotter',
-    version='0.0.1',
+    version='0.0.2',
     author='Thiago Panini',
     author_email='thipanini94@gmail.com',
     packages=find_packages(),
     install_requires=[
-
+        'pandas==1.1.5',
+        'matplotlib==3.2.1',
+        'seaborn==0.11.1',
     ],
     license='MIT',
-    description='Gerenciamento de arquivos em diretórios locais a partir de funcionalidades encapsuladas',
+    description='Explore visual insights from data in an easy, intituitive way and with few lines of code.',
     long_description=__long_description__,
     long_description_content_type="text/markdown",
-    url='https://github.com/ThiagoPanini/filescope',
-    keywords='Files, directories, os, managing files',
+    url='https://github.com/ThiagoPanini/xplotter',
+    keywords='Plots, visual analysis, exploratory data analysis, python graphics',
     include_package_data=True,
     zip_safe=False,
     classifiers=[
