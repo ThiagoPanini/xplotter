@@ -13,6 +13,13 @@ Table of Contents
     1.1 Importing libraries
     1.2 Auxiliar functions
 2. Custom graphical analysis
+    2.1 Donut and pie charts
+    2.2 Simple and percentual countplots
+    2.3 Distribution plot
+    2.4 Aggregation approach
+    2.5 General overview and correlation matrix
+    2.6 Multiple plots at one function
+    2.7 Line charts for evolution plots
 ---------------------------------------------------
 """
 
@@ -44,7 +51,7 @@ from xplotter.formatter import make_autopct, format_spines, AnnotateBars
 """
 ---------------------------------------------------
 ---------------- 1. INITIAL SETUP -----------------
-             1.1 Auxiliar functions
+             1.2 Auxiliar functions
 ---------------------------------------------------
 """
 
@@ -95,6 +102,7 @@ def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
 """
 ---------------------------------------------------
 ---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+            2.1 Donut and pie charts
 ---------------------------------------------------
 """
 
@@ -125,11 +133,11 @@ def plot_donut_chart(df, col, **kwargs):
         :arg img_name: filename for image to be saved [type: string, default=f'{col}_donutchart.png']
     
     Return
-    -------
+    ------
     This function returns nothing besides the custom donut chart
 
     Application
-    ---------
+    -----------
     plot_donut_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
     
@@ -221,11 +229,11 @@ def plot_pie_chart(df, col, **kwargs):
         :arg img_name: filename for image to be saved [type: string, default=f'{col}_piechart.png']
     
     Return
-    -------
+    ------
     This function returns nothing besides the custom pie chart
 
     Application
-    ---------
+    -----------
     plot_pie_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
 
@@ -314,11 +322,11 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
         :arg img_name: filename for image to be saved [type: string, default=f'{col}_piechart.png']
     
     Return
-    -------
+    ------
     This function returns nothing besides plotting the custom double donut chart
 
     Application
-    ---------
+    -----------
     plot_pie_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
     
@@ -417,6 +425,15 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col1}_{col2}_donutchart.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+        2.2 Simple and percentual countplots
+---------------------------------------------------
+"""
+
+# Simple countplot
 def plot_countplot(df, col, **kwargs):
     """
     Creates a simple countplot using a dataset and a column name
@@ -428,25 +445,25 @@ def plot_countplot(df, col, **kwargs):
     :param **kwargs: additional parameters
         :arg top: filter the top N categories on the chart [type: int, default=-1]
         :arg figsize: figure dimension [type: tuple, default=(10, 7)]
-        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]   
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
         :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
         :arg palette: color palette to be used on the chart [type: string, default='rainbow']
-        :arg order: sorts the categories (seaborn order function arg) [type: bool, default=True]
+        :arg order: sorts categories (seaborn order function arg) [type: bool, default=True]
         :arg orient: horizontal or vertical orientation [type: string, default='h']
         :arg title: chart title [type: string, default=f'Countplot for Feature {col}']
         :arg size_title: title size [type: int, default=16]
-        :arg size_label: label size[type: int, default=14]
+        :arg size_labels: label size [type: int, default=14]
         :arg label_names: custom labels [type: dict, default=value_counts().index]    
         :arg save: flag for saving the image created [type: bool, default=None]
         :arg output_path: path for image to be saved [type: string, default='output/']
         :arg img_name: filename for image to be saved [type: string, default=f'{col}_countplot.png']
 
     Return
-    -------
+    ------
     This function returns nothing besides plotting the countplot chart
 
     Application
-    ---------
+    -----------
     plot_countplot(df=df, col='column')
     """
     
@@ -558,6 +575,7 @@ def plot_countplot(df, col, **kwargs):
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_countplot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+# Percentual countplot using crosstab and grouped barchart
 def plot_pct_countplot(df, col, hue, **kwargs):
     """
     Creates a percentage countplot (grouped bar chart) using a dataset and a column name
@@ -574,7 +592,6 @@ def plot_pct_countplot(df, col, hue, **kwargs):
         :arg orient: horizontal or vertical orientation [type: string, default='h']
         :arg title: chart title [type: string, default=f'Countplot for Feature {col}']
         :arg size_title: title size [type: int, default=16]
-        :arg size_label: label size[type: int, default=14]
         :arg label_names: custom labels [type: dict, default=value_counts().index]    
         :arg save: flag for saving the image created [type: bool, default=None]
         :arg output_path: path for image to be saved [type: string, default='output/']
@@ -585,7 +602,7 @@ def plot_pct_countplot(df, col, hue, **kwargs):
     This function returns nothing besides plotting the countplot chart
 
     Application
-    ---------
+    -----------
     plot_countplot(df=df, col='column')
     """
     
@@ -666,160 +683,67 @@ def plot_pct_countplot(df, col, hue, **kwargs):
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_{hue}_pctcountplot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
-def plot_aggregation(df, group_col, value_col, aggreg, **kwargs):
-    """
-    Função responsável por plotagem de gráficos de agregação em barras
-    
-    Parâmetros
-    ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param group_col: coluna pivot de agrupamento [type: string]
-    :param value_col: coluna com os valores a serem agregados [type: string]
-    :param aggreg: informação da agregação utilizada na análise [type: string]
-    :param **kwargs: parâmetros adicionais da função   
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg top: filtro de top categorias a serem plotadas [type: int, default=-1]
-        :arg orient: horizontal ou vertical [type: string, default='h']
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'Volumetria para a variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg size_label: tamanho do rótulo [type: int, default=14]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de um gráfico de barras summarizado
 
-    Aplicação
-    ---------
-    plot_aggregation(df=df, group_col='group', value_col='value', aggreg='agg')
-    """
-    
-    # Verificando presença das colunas na base
-    hue = kwargs['hue'] if 'hue' in kwargs else None
-    df_columns = df.columns
-    if group_col not in df_columns:
-        print(f'Coluna {group_col} não presente na base')
-        return
-    if value_col not in df_columns:
-        print(f'Coluna {value_col} não presente na base')
-        return
-    if hue is not None and hue not in df_columns:
-        print(f'Coluna {hue} não presente na base')
-        return
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+               2.3 Distribution plot
+---------------------------------------------------
+"""
 
-    # Aplicando agregação configurada
-    try:
-        if hue is not None:
-            df_group = df.groupby(by=[group_col, hue], as_index=False).agg({value_col: aggreg})
-        else:
-            df_group = df.groupby(by=group_col, as_index=False).agg({value_col: aggreg})
-        #df_group.sort_values(by=value_col, ascending=False, inplace=True)
-        df_group[group_col] = df_group[group_col].astype(str)
-    except AttributeError as ae:
-        print(f'Erro ao aplicar agregação com {aggreg}. Excepion lançada: {ae}')
-        
-    # Filtrando entradas
-    if 'top' in kwargs and kwargs['top'] > 0:
-        df_group = df_group[:kwargs['top']]
-        
-    # Retornando parâmetros de plotagem
-    figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
-    ax = kwargs['ax'] if 'ax' in kwargs else None
-    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
-    
-    # Rótulos de medida para a plotagem
-    if 'label_names' in kwargs:
-        df_group[group_col] = df_group[group_col].map(kwargs['label_names'])
-    order = kwargs['order'] if 'order' in kwargs else None
-        
-    # Orientação da plotagem
-    orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
-    if orient == 'v':
-        x = group_col
-        y = value_col
-    else:
-        x = value_col
-        y = group_col
-        
-    # Retornando parâmetros de formatação da plotagem
-    title = kwargs['title'] if 'title' in kwargs else f'Agrupamento de {group_col} por {aggreg} de {value_col}'
-    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
-    size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 14
-    n_dec = kwargs['n_dec'] if 'n_dec' in kwargs else 2
-    
-    # Construindo plotagem
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-    sns.barplot(x=x, y=y, data=df_group, ax=ax, hue=hue, palette=palette, ci=None, orient=orient, order=order)
-    
-    # Formatando plotagem
-    ax.set_title(title, size=size_title, pad=20)
-    format_spines(ax, right_border=False)
-
-    # Inserindo rótulo de percentual
-    if orient == 'h':
-        AnnotateBars(n_dec=n_dec, font_size=size_labels, color='black').horizontal(ax)
-    else:
-        AnnotateBars(n_dec=n_dec, font_size=size_labels, color='black').vertical(ax)
-            
-    # Verificando salvamento da imagem
-    if 'save' in kwargs and bool(kwargs['save']):
-        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{value_col}{hue}_{aggreg}plot_by{group_col}.png'
-        save_fig(fig=fig, output_path=output_path, img_name=img_name)
-
+# Distribution plot from a numerical feature
 def plot_distplot(df, col, kind='dist', **kwargs):
     """
-    Função responsável pela plotagem de variáveis contínuas em formato de distribuição
+    Creates a custom distribution plot based on a numeric column
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col: referência de coluna, de preferência numérica, a ser analisada [type: string]
-    :param kind: tipo de plotagem de distribuição [type: string, default='dist']
-        *opções: ['dist', 'kde', 'box', 'boxen', 'strip']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'{kind}plot para a Variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de um gráfico de barras summarizado
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col: numeric column to be its distribution plotted [type: string]
+    :param kind: kind of distribution plot [type: string, default='dist']
+        *options for this parameter: ['dist', 'kde', 'box', 'boxen', 'strip']
+    :param **kwargs: additional parameters
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg figsize: figure dimension [type: tuple, default=(10, 7)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=False]
+        :arg kde: plots kde line on the chart (seaborn's parameter) [type: bool, default=True]
+        :arg rug: plots rug at the bottom of the the chart (seaborn's parameter) [type: bool, default=False]
+        :arg shade: fills the area below distribution curve (seaborn's parameter) [type: bool, default=True]
+        :arg color: color of the distribution line [type: string, default='darkslateblue']
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg title: chart title [type: string, default=f'{kind.title()}plot for Feature {col}']
+        :arg size_title: title size [type: int, default=16]
+        :arg color_list: list of colors to be used on the chart if applicable [type: list]
+            *default: ['darkslateblue', 'crimson', 'cadetblue', 'mediumseagreen', 'salmon', 'lightskyblue', 'darkgray']
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}{hue}_{kind}plot.png']
 
-    Aplicação
+    Return
+    ------
+    This function returns nothing besides plotting the distribution chart
+
+    Application
     ---------
     plot_distplot(df=df, col='column_name')
     """
 
-    # Verificando presença das colunas na base
+    # Searching if the columns on parameters are on the given dataset
     hue = kwargs['hue'] if 'hue' in kwargs else None
     if col not in df.columns:
-        print(f'Coluna {col} não presente na base')
+        print(f'There is no column {col} on the given dataset')
         return
     if hue is not None and hue not in df.columns:
-        print(f'Coluna {hue} não presente na base')
+        print(f'There is no column {hue} on the given dataset')
         return
     
-    # Validando tipo de plotagem
+    # Validating kind of the chart to be plotted
     possible_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
     if kind not in possible_kinds:
-        print(f'Parâmetro kind inválido. Opções possívels: {possible_kinds}')
+        print(f'Invalid "kind" parameter. Please choose between: {possible_kinds}')
 
-    # Parâmetros de plotagem
+    # Extracting chart parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     hist = kwargs['hist'] if 'hist' in kwargs else False
@@ -828,15 +752,17 @@ def plot_distplot(df, col, kind='dist', **kwargs):
     shade = kwargs['shade'] if 'shade' in kwargs else True
     color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
     palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
-    title = kwargs['title'] if 'title' in kwargs else f'{kind.title()}plot para a Variável {col}'
+    title = kwargs['title'] if 'title' in kwargs else f'{kind.title()}plot for Feature {col}'
     size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
-    list_of_colors = ['darkslateblue', 'cornflowerblue', 'cadetblue', 'mediumseagreen', 'salmon', 'lightskyblue', 'crimson']
+    list_of_colors = ['darkslateblue', 'crimson', 'cadetblue', 'mediumseagreen', 
+                      'salmon', 'lightskyblue', 'cornflowerblue']
     color_list = kwargs['color_list'] if 'color_list' in kwargs else list_of_colors
     c = 0
 
+    # Setting seaborn style
     sns.set(style='white', palette='muted', color_codes=True)
 
-    # Construindo plotagem
+    # Building figure and axis if applicable
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     
@@ -845,7 +771,8 @@ def plot_distplot(df, col, kind='dist', **kwargs):
         if hue is not None:
             for cat in df[hue].value_counts().index:
                 color = color_list[c]
-                sns.distplot(df[df[hue]==cat][col], ax=ax, hist=hist, kde=kde, rug=rug, label=cat, color=color)
+                sns.distplot(df[df[hue]==cat][col], ax=ax, hist=hist, kde=kde, rug=rug, 
+                            label=cat, color=color)
                 c += 1
         else:
             sns.distplot(df[col], ax=ax, hist=hist, kde=kde, rug=rug, color=color)
@@ -877,544 +804,229 @@ def plot_distplot(df, col, kind='dist', **kwargs):
         else:
             sns.stripplot(y=col, data=df, ax=ax, palette=palette)
             
-    # Modificando labels
+    # Changing labels (in case of kind=box, boxen or strip)
     if 'label_names' in kwargs and hue is not None and kind in ['box', 'boxen', 'strip']:
         labels_old = ax.get_xticklabels()
         labels = [l.get_text() for l in labels_old]
         try:
-            # Convertendo textos antes do mapeamento
+            # Converting texts before mapping
             if type(list(kwargs['label_names'].keys())[0]) is int:
                 labels = [int(l) for l in labels]
             elif type(list(kwargs['label_names'].keys())[0]) is float:
                 labels = [float(l) for l in labels]
 
-            # Mapeando rótulos customizados
+            # Mapping custom labels
             labels = pd.DataFrame(labels)[0].map(kwargs['label_names'])
             ax.set_xticklabels(labels)
         except Exception as e:
-            print(f'Erro ao mapear labels na coluna {col}. Exception: {e}')
+            print(f'Error on mapping labels on column {col}. Exception: {e}')
             
-    # Customizando gráfico
+    # Customizing chart
     format_spines(ax=ax, right_border=False)
     ax.set_title(title, size=size_title)
     if kind in ['dist', 'kde'] and hue is not None:
         ax.legend(title=hue)
         
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}{hue}_{kind}plot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
-def plot_corr_matrix(df, corr_col, corr='positive', **kwargs):
+
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+             2.4 Aggregation approach
+---------------------------------------------------
+"""
+
+# Simple aggregation plot based on a group and a value columns
+def plot_aggregation(df, group_col, value_col, aggreg, **kwargs):
     """
-    Função responsável por analisar correlação entre variáveis numéricas de uma base
+    Plots a custom aggregate chart into a bar style
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param corr_col: referência de coluna alvo da correlação analisada [type: string]
-    :param corr: tipo de correlação (positiva ou negativa) [type: string, default='positive']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='YlGnBu' ou 'magma']
-        :arg n_vars: quantidade de variáveis utilizadas na análise [type: int, default=10]
-        :arg fmt: formato dos números/labels da matriz [type: string, default='.2f']
-        :arg cbar: flag para plotagem da barra lateral de cores [type: bool, default=True]
-        :arg annot: flag para anotação dos labels na matriz [type: bool, default=True]
-        :arg square: flag para redimensionamento da matriz [type: bool, default=True]
-        :arg title: título do gráfico [type: string, default=f'Análise de correlação de variáveis']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além da matriz de correlação especificada
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param group_col: group column used on aggregation [type: string]
+    :param value_col: value column with values to be aggregated [type: string]
+    :param aggreg: name reference of aggregation to be used [type: string]
+    :param **kwargs: additional parameters 
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg top: filter the top N categories on the chart [type: int, default=-1]
+        :arg figsize: figure dimension [type: tuple, default=(10, 7)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg label_names: custom labels [type: dict, default=value_counts().index]
+        :arg order: sorts the categories (seaborn order function arg) [type: bool, default=True]
+        :arg orient: horizontal or vertical orientation [type: string, default='h']
+        :arg title: chart title [type: string, default=f'{aggreg.title()} of {value_col} by {group_col}']
+        :arg size_title: title size [type: int, default=16]
+        :arg size_labels: label size [type: int, default=14]
+        :arg n_dec: number of decimal places on number formating [type: int, default=2]
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved 
+            [type: string, default={value_col}{hue}_{aggreg}plot_by{group_col}.png']
 
-    Aplicação
-    ---------
-    plot_corr_matrix(df=df, corr_col='target')
+    Return
+    ------
+    This function returns nothing besides plotting the summarized bar chart
+
+    Application
+    -----------
+    plot_aggregation(df=df, group_col='group', value_col='value', aggreg='agg')
     """
     
-    # Criando matriz de correlação para a base de dados
-    corr_mx = df.corr()
-    
-    # Retornando parâmetro de filtro de colunas
-    num_features = [col for col, dtype in df.dtypes.items() if dtype != 'object']
-    n_vars = kwargs['n_vars'] if 'n_vars' in kwargs else df[num_features].shape[1]
+    # Searching if the parameters columns are on the dataset
+    hue = kwargs['hue'] if 'hue' in kwargs else None
+    df_columns = df.columns
+    if group_col not in df_columns:
+        print(f'There is no column {group_col} in the given dataset')
+        return
+    if value_col not in df_columns:
+        print(f'There is no column {value_col} in the given dataset')
+        return
+    if hue is not None and hue not in df_columns:
+        print(f'There is no column {hue} in the given dataset')
+        return
 
-    # Verificando tipo de correlação e aplicando modificações
-    if corr == 'positive':
-        # Retornando top colunas com correlação positiva em relação a corr_col
-        corr_cols = list(corr_mx.nlargest(n_vars+1, corr_col)[corr_col].index)
-        pos_title = f'Top {n_vars} Features - Correlação Positiva \ncom a Variável ${corr_col}$'
-        pos_cmap = 'YlGnBu'
-        
-        # Associando parâmetros gerais da função
-        title = kwargs['title'] if 'title' in kwargs else pos_title
-        cmap = kwargs['cmap'] if 'cmap' in kwargs else pos_cmap
-        
-    elif corr == 'negative':
-        # Retornando top colunas com correlação negativa em relação a corr_col
-        corr_cols = list(corr_mx.nsmallest(n_vars+1, corr_col)[corr_col].index)
-        corr_cols = [corr_col] + corr_cols[:-1]
-        neg_title = f'Top {n_vars} Features - Correlação Negativa \ncom a Variável ${corr_col}$'
-        neg_cmap = 'magma'
-        
-        # Associando parâmetros gerais da função
-        title = kwargs['title'] if 'title' in kwargs else neg_title
-        cmap = kwargs['cmap'] if 'cmap' in kwargs else neg_cmap
-        
-    # Construindo array de correlação
-    corr_data = np.corrcoef(df[corr_cols].values.T)
+    # Validating and transforming the aggreg parameter
+    aggreg = aggreg.lower()
 
-    # Retornando parâmetros gerais de plotagem
-    figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 10)
+    # Applying the aggregation based on parameters
+    try:
+        if hue is not None:
+            df_group = df.groupby(by=[group_col, hue], as_index=False).agg({value_col: aggreg})
+        else:
+            df_group = df.groupby(by=group_col, as_index=False).agg({value_col: aggreg})
+        df_group[group_col] = df_group[group_col].astype(str)
+    except AttributeError as ae:
+        print(f'Error on applying aggregation with aggreg {aggreg}. Excepion: {ae}')
+        
+    # Filtering top N categories if applicable
+    if 'top' in kwargs and kwargs['top'] > 0:
+        df_group = df_group[:kwargs['top']]
+        
+    # Setting up chart parameters
+    figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
-    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
-    cbar = kwargs['cbar'] if 'cbar' in kwargs else True
-    annot = kwargs['annot'] if 'annot' in kwargs else True
-    square = kwargs['square'] if 'square' in kwargs else True
-    fmt = kwargs['fmt'] if 'fmt' in kwargs else '.2f'
+    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
     
-    # Plotando matriz através de um heatmap
+    # Setting up labels
+    if 'label_names' in kwargs:
+        try:
+            df_group[group_col] = df_group[group_col].map(kwargs['label_names'])
+        except Exception as e:
+            print(f'Error on mapping the dict label_names on column {group_col}. Exception: {e}')
+    order = kwargs['order'] if 'order' in kwargs else None
+        
+    # Chart orientation
+    orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
+    if orient == 'v':
+        x = group_col
+        y = value_col
+    else:
+        x = value_col
+        y = group_col
+        
+    # Returning parameters for chart customization
+    title = kwargs['title'] if 'title' in kwargs else f'{aggreg.title()} of {value_col} by {group_col}'
+    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
+    size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 14
+    n_dec = kwargs['n_dec'] if 'n_dec' in kwargs else 2
+    
+    # Building up a barchart
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    sns.heatmap(corr_data, ax=ax, cbar=cbar, annot=annot, square=square, fmt=fmt, cmap=cmap,
-                yticklabels=corr_cols, xticklabels=corr_cols)
-    ax.set_title(title, size=size_title, color='black', pad=20)
+    sns.barplot(x=x, y=y, data=df_group, ax=ax, hue=hue, palette=palette, ci=None, orient=orient, order=order)
+    
+    # Setting title and formating borders
+    ax.set_title(title, size=size_title, pad=20)
+    format_spines(ax, right_border=False)
 
-    # Verificando salvamento da imagem
-    if 'save' in kwargs and bool(kwargs['save']):
-        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'correlation_matrix.png'
-        save_fig(fig=fig, output_path=output_path, img_name=img_name)
-
-def data_overview(df, **kwargs):
-    """
-    Análise geral em uma base de dados, retornando um DataFrame como resultado
-    
-    Parâmetros
-    ----------
-    :param df: base de dados utilizada na análise [type: pd.DataFrame]
-    :param **kwargs: argumentos adicionais da função
-        :arg corr: flag para análise de correlação [type: bool, default=False]
-        :arg corr_method: método de correlação utilizada ('pearson', 'kendall', 'spearman')
-        :arg target: variável target utilizada na correlação [type: string, default=None]
-        :arg thresh_corr: limiar para filtro corr >= threshold [type: float, default=None]
-        :arg thresh_null: limiar para filtro qtd_null >= threshold [type: float, default=0]
-        :arg thresh_pct_null: limiar para filtro pct_null >= threshold [type: float, default=0]
-        :arg sort: coluna de ordenação da base final [type: string, defaul='qtd_null']
-        :arg ascending: flag de ordenação ascendente [type: bool, default=False]
-        
-    Retorno
-    -------
-    :return df_overview: DataFrame com análise das colunas das base
-    
-    Aplicação
-    ---------
-    df_overview = data_overview(df=df, corr=True, target='target')
-    """
-    
-    # Retornando dados nulos
-    df_null = pd.DataFrame(df.isnull().sum()).reset_index()
-    df_null.columns = ['feature', 'qtd_null']
-    df_null['pct_null'] = df_null['qtd_null'] / len(df)
-    
-    # Retornando tipo primitivo e quantidade de entradas dos atributos categóricos
-    df_null['dtype'] = df_null['feature'].apply(lambda x: df[x].dtype)
-    df_null['qtd_cat'] = [len(df[col].value_counts()) if df[col].dtype == 'object' else 0 for col in 
-                          df_null['feature'].values]
-    
-    # Retornando parâmetros adicionais da função
-    corr = kwargs['corr'] if 'corr' in kwargs else False
-    corr_method = kwargs['corr_method'] if 'corr_method' in kwargs else 'pearson'
-    target = kwargs['target'] if 'target' in kwargs else None
-    thresh_corr = kwargs['thresh_corr'] if 'thresh_corr' in kwargs else None
-    thresh_null = kwargs['thresh_null'] if 'thresh_null' in kwargs else 0
-    thresh_pct_null = kwargs['thresh_pct_null'] if 'thresh_pct_null' in kwargs else 0   
-    sort = kwargs['sort'] if 'sort' in kwargs else 'qtd_null'
-    ascending = kwargs['sort_ascending'] if 'sort_ascending' in kwargs else False
-    
-    # Verificando análise de correlação
-    if corr and target is None:
-        print(f'Ao definir "correlation=True" é preciso também definir o argumento "target"')
-    
-    if corr and target is not None:
-        # Extraindo correlação especificada
-        target_corr = pd.DataFrame(df.corr(method=corr_method)[target])
-        target_corr = target_corr.reset_index()
-        target_corr.columns = ['feature', f'target_{corr_method}_corr']
-        
-        # Aplicando join
-        df_overview = df_null.merge(target_corr, how='left', on='feature')
-        if thresh_corr is not None:
-            df_overview = df_overview[df_overview[f'target_{corr_method}_corr'] > thresh_corr]
-            
+    # Inserting percentage label
+    if orient == 'h':
+        AnnotateBars(n_dec=n_dec, font_size=size_labels, color='black').horizontal(ax)
     else:
-        # Análise de correlação não será aplicada
-        df_overview = df_null
-        
-    # Filtrando dados nulos
-    df_overview = df_overview.query('pct_null >= @thresh_null')
-    df_overview = df_overview.query('qtd_null >= @thresh_pct_null')
-    
-    # Ordenando base
-    df_overview.sort_values(by=sort, ascending=ascending, inplace=True)
-    df_overview.reset_index(drop=True, inplace=True)
-    
-    return df_overview
-
-def plot_multiple_distplots(df, col_list, n_cols=3, kind='dist', **kwargs):
-    """
-    Função responsável pela plotagem de análise contínua para múltiplas variáveis
-    
-    Parâmetros
-    ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col_list: lista de colunas a serem utilizadas na análise [type: list]
-    :param n_cols: número de colunas configuradas na figura [type: int, default=3]
-    :param kind: tipo de plotagem de distribuição [type: string, default='dist']
-        *opções: ['dist', 'kde', 'box', 'boxen', 'strip']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(17, n_rows*5)]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg color: cor da linha para distplot e kdeplot [type: string, default='darkslateblue']
-        :arg title: título do gráfico [type: string, default=f'{kind}plot para a Variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de um gráfico de barras summarizado
-
-    Aplicação
-    ---------
-    plot_distplot(df=df, col='column_name')
-    """
-    
-    # Validando tipo de plotagem
-    possible_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
-    if kind not in possible_kinds:
-        print(f'Parâmetro kind inválido. Opções possívels: {possible_kinds}')
-        return
-    
-    # Calculando parâmetros da figura de plotagem
-    n_rows = ceil(len(col_list) / n_cols)
-    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
-    i, j = 0, 0
-    
-    # Parâmetros adicionais de plotagem
-    hue = kwargs['hue'] if 'hue' in kwargs else None
-    hist = kwargs['hist'] if 'hist' in kwargs else True
-    kde = kwargs['kde'] if 'kde' in kwargs else True
-    rug = kwargs['rug'] if 'rug' in kwargs else False
-    shade = kwargs['shade'] if 'shade' in kwargs else True
-    color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
-    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
-    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
-    
-    # Criando figura e iterando sobre colunas da lista
-    fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=figsize)
-    for col in col_list:
-        # Parâmetros de plotagem
-        try:
-            ax = axs[i, j]
-        except IndexError as ie:
-            # Plotagem em uma única linha (eixo recebe argumentos como lista e não como matriz)
-            ax = axs[j]
-        title = f'{kind.title()} para {col}'
-        
-        plot_distplot(df=df, col=col, ax=ax, kind=kind, hue=hue, hist=hist, kde=kde, rug=rug,
-                      shade=shade, color=color, palette=palette, title=title, size_title=size_title)
-        
-        # Incrementando índices
-        j += 1
-        if j >= n_cols:
-            j = 0
-            i += 1
+        AnnotateBars(n_dec=n_dec, font_size=size_labels, color='black').vertical(ax)
             
-    # Tratando caso apartado: figura(s) vazia(s)
-    i, j = 0, 0
-    for n_plots in range(n_rows * n_cols):
-
-        # Se o índice do eixo for maior que a quantidade de features, elimina as bordas
-        if n_plots >= len(col_list):
-            try:
-                axs[i][j].axis('off')
-            except TypeError as e:
-                axs[j].axis('off')
-
-        # Incrementando
-        j += 1
-        if j == n_cols:
-            j = 0
-            i += 1 
-    
-    plt.tight_layout()
-
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}{hue}_{kind}plot.png'
-        save_fig(fig=fig, output_path=output_path, img_name=img_name)
-  
-def plot_multiple_dist_scatterplot(df, col_list, y_col, dist_kind='dist', scatter_kind='reg', 
-                                   **kwargs):
-    """
-    Função responsável pela plotagem de análise contínua para múltiplas variáveis
-    
-    Parâmetros
-    ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col_list: lista de colunas a serem utilizadas na análise [type: list]
-    :param y_col: coluna y a ser utilizada na análise de scatter [type: string]
-    :param dist_kind: tipo de plotagem de distribuição [type: string, default='dist']
-        *opções: ['dist', 'kde', 'box', 'boxen', 'strip']
-    :param scatter_kind: tipo de plotagem para correlação [type: string, default='reg']
-        *opções: ['scatter', 'reg']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg color: cor da linha para distplot e kdeplot [type: string, default='darkslateblue']
-        :arg title: título do gráfico [type: string, default=f'{dist_kind}plot para a Variável {col}']
-        :arg title2: título do gráfico [type: string, default=f'{scatter_kind}plot entre {col} e {y_col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg alpha: parâmetro alpha da função sns.scatterplot() [type: float, default=.7]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de um gráfico de barras summarizado
-
-    Aplicação
-    ---------
-    plot_distplot(df=df, col='column_name')
-    """
-    
-    # Validando tipo de plotagem
-    possible_dist_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
-    possible_scatter_kinds = ['scatter', 'reg']
-    if dist_kind not in possible_dist_kinds:
-        print(f'Parâmetro dist_kind inválido. Opções possívels: {possible_kinds}')
-        return
-    if scatter_kind not in possible_scatter_kinds:
-        print(f'Parâmetro scatter_kind inválido. Opções possívels: {possible_scatter_kinds}')
-        return
-    
-    # Validando quantidade de colunas
-    if y_col not in list(df.columns):
-        print(f'Erro! Argumento "y_col" não presente na base')
-        return
-    
-    # Calculando parâmetros da figura de plotagem
-    n_rows = len(col_list)
-    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
-    i = 0
-    
-    # Parâmetros adicionais de plotagem
-    hue = kwargs['hue'] if 'hue' in kwargs else None
-    hist = kwargs['hist'] if 'hist' in kwargs else True
-    kde = kwargs['kde'] if 'kde' in kwargs else True
-    rug = kwargs['rug'] if 'rug' in kwargs else False
-    shade = kwargs['shade'] if 'shade' in kwargs else True
-    color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
-    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
-    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
-    
-    # Criando figura e iterando sobre colunas da lista
-    fig, axs = plt.subplots(nrows=n_rows, ncols=2, figsize=figsize)
-    for col in col_list:
-        # Parâmetros de plotagem
-        try:
-            ax = axs[i, 0]
-        except IndexError as ie:
-            # Plotagem em uma única linha (eixo recebe argumentos como lista e não como matriz)
-            ax = axs[0]
-        title = f'{dist_kind.title()} para a variável {col}'
-        
-        plot_distplot(df=df, col=col, ax=ax, kind=dist_kind, hue=hue, hist=hist, kde=kde, rug=rug,
-                      shade=shade, color=color, palette=palette, title=title, size_title=size_title)
-        
-        # Paraêmtros do segundo eixo de plotagem (correlação)
-        try:
-            ax2 = axs[i, 1]
-        except IndexError as ie:
-            # Plotagem em uma única linha (eixo recebe argumentos como lista e não como matriz)
-            ax2 = axs[1]
-        alpha = kwargs['alpha'] if 'alpha' in kwargs else .7
-        
-        # Scatterplot
-        if scatter_kind == 'scatter':
-            sns.scatterplot(x=col, y=y_col, data=df, color=color, ax=ax2)
-            
-        # Regplot
-        if scatter_kind == 'reg':
-            sns.regplot(x=col, y=y_col, data=df, color=color, ax=ax2)
-        
-        # Incrementando índices
-        i += 1
-        
-        # Personalizando plotagem
-        format_spines(ax2, right_border=False)
-        title2 = kwargs['title2'] if 'title2' in kwargs else f'{scatter_kind.title()}plot entre {col} e {y_col}'
-        ax2.set_title(title2, size=size_title)
-        if dist_kind in ['dist', 'kde'] and hue is not None:
-            ax.legend(title=hue)
-            
-    plt.tight_layout()
-
-    # Verificando salvamento da imagem
-    if 'save' in kwargs and bool(kwargs['save']):
-        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{dist_kind}_{scatter_kind}plot.png'
-        save_fig(fig=fig, output_path=output_path, img_name=img_name)
-  
-def plot_multiple_countplots(df, col_list, n_cols=3, **kwargs):
-    """
-    Função responsável por plotar um gráfico de barras de volumetrias (countplot)
-    
-    Parâmetros
-    ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col_list: lista de colunas utilizadas na análise múltipla [type: list]
-    :param n_cols: número de colunas configuradas na figura [type: int, default=3]
-    :param **kwargs: parâmetros adicionais da função   
-        :arg top: filtro de top categorias a serem plotadas [type: int, default=-1]
-        :arg orient: horizontal ou vertical [type: string, default='h']
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(17, n_rows * 5)]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg order: flag para ordenação dos dados [type: bool, default=True]
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'Volumetria para a variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg size_label: tamanho do rótulo [type: int, default=14]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de uma plotagem de volumetrias (barras)
-
-    Aplicação
-    ---------
-    plot_multiple_countplots(df=df, col_list=total_cols)
-    """
-    
-    # Definindo parâmetros da figura de plotagem
-    n_rows = ceil(len(col_list) / n_cols)
-    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
-    i, j = 0, 0
-    
-    # Extraindo argumentos adicionais da plotagem
-    hue = kwargs['hue'] if 'hue' in kwargs else None
-    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
-    order = df[col].value_counts().index if 'order' in kwargs and bool(kwargs['order']) else None
-    orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
-    size_title = kwargs['size_title'] if 'size_title' in kwargs else 12
-    size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 12
-    top = kwargs['top'] if 'top' in kwargs else -1
-    
-    # Criando figura e iterando sobre colunas da lista
-    fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=figsize)
-    for col in col_list:
-        # Definindo parâmetros de plotagem
-        try:
-            ax = axs[i, j]
-        except IndexError as ie:
-            # Plotagem em uma única linha (eixo recebe argumentos como lista e não como matriz)
-            ax = axs[j]
-        
-        title = kwargs['title'] if 'title' in kwargs else f'Volumetria de dados por {col}'
-        
-        # Chamando função para plotagem individual de countplot
-        plot_countplot(df=df, col=col, ax=ax, hue=hue, palette=palette, order=order, title=title,
-                       orient=orient, size_title=size_title, size_labels=size_labels, top=top)
-                    
-        # Incrementando índices
-        j += 1
-        if j == n_cols:
-            j = 0
-            i += 1
-            
-    # Tratando caso apartado: figura(s) vazia(s)
-    i, j = 0, 0
-    for n_plots in range(n_rows * n_cols):
-
-        # Se o índice do eixo for maior que a quantidade de features, elimina as bordas
-        if n_plots >= len(col_list):
-            try:
-                axs[i][j].axis('off')
-            except TypeError as e:
-                axs[j].axis('off')
-
-        # Incrementando
-        j += 1
-        if j == n_cols:
-            j = 0
-            i += 1 
-    
-    plt.tight_layout()      
-
-    # Verificando salvamento da imagem
-    if 'save' in kwargs and bool(kwargs['save']):
-        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'multiple_countplots.png'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{value_col}{hue}_{aggreg}plot_by{group_col}.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+# A complete report using countplot, aggregation, distplot and statistical parameters
 def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     """
-    Função responsável por plotar uma análise conjunta de volumetrias, agregação e distribuição,
-    unindo funções como plot_countplot(), plot_aggregation() e plot_distplot()
+    Creates a joint analysis between count, aggregation and distribution by union functions likes
+    plot_countplot(), plot_aggregation() and plot_distplot(). This plot_cat_aggreg_report() is really
+    useful for extract rich insights from the data and visualize it at one place
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param cat_col: coluna categórica alvo de análise [type: string]
-    :param value_col: coluna numérica parte da análise [type: string]
-    :param aggreg: agregação principal utilizada no eixo 2 [type: string, default='mean']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg top: filtro de top categorias a serem plotadas [type: int, default=-1]
-        :arg orient: horizontal ou vertical [type: string, default='h']
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(17, 5)]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg order: flag para ordenação dos dados [type: bool, default=True]
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'Volumetria para a variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg size_label: tamanho do rótulo [type: int, default=14]
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param cat_col: categorical column used on analysis [type: string]
+    :param value_col: value column with values to be aggregated [type: string]
+    :param aggreg: name reference of aggregation to be used [type: string, default='mean']
+    :param **kwargs: additional parameters 
+        :arg figsize: figure dimension [type: tuple, default=(17, 5)]
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg order: sorts categories into a defined order [type: list, default=None]
+        :arg orient: horizontal or vertical orientation [type: string, default='v']
+        :arg dist_kind: kind of distribution chart [type: string, default='dist']
+        :arg title1: title for countplot chart [type: string, default=f'Countplot for {cat_col}']
+        :arg title2: title for aggregation chart [type: string, default=f'{value_col} {aggreg.title()} by {cat_col}']
+        :arg title3: head title for statistical axis [type: string, default='Statistical Analysis']
+        :arg title4: title for distplot chart [type: string, default=f'{kind.title()}plot for {value_col}']
+        :arg size_title: title size [type: int, default=16]
+        :arg size_labels: label size [type: int, default=12]
+        :arg top: filter the top N categories on the chart [type: int, default=-1]
+        :arg desc_text_x_pos: initial x position of description text [type: float, default=.50]
+        :arg desc_text_y_pos: initial y position of description text [type: float, default=.75]
+        :arg desc_text: description text [type: string]
+            *default: 'A statistical approac for {value_col}\nusing the data available']
+        :arg desc_text_font: size of description text [type: int, default=12]
+        :arg stat_title_x_pos: initial x position of statistical titles [type: float, default=.17]
+        :arg stat_title_y_pos: initial y position of statistical titles [type: float]
+            *default: desc_text_y_pos - 0.2
+        :arg stat_title_mean: statistical mean title [type: string, default='Mean']
+        :arg stat_title_median: statistical median title [type: string, default='Median']
+        :arg stat_title_std: statistical standard deviation title [type: string, default='Std']
+        :arg stat_title_font: size of statistical titles [type: int, default=14]
+        :arg inc_x_pos: step on x axis for separating statistical elements [type: int, default=18]
+        :arg stat_x_pos: initial x position of statistical values [type: float, default=.27]
+        :arg stat_y_pos: initial y position of statistical values [type: float]
+            *default: stat_title_y_pos - 0.22
+        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=True]
+        :arg kde: plots kde line on the chart (seaborn's parameter) [type: bool, default=True]
+        :arg rug: plots rug at the bottom of the the chart (seaborn's parameter) [type: bool, default=False]
+        :arg shade: fills the area below distribution curve (seaborn's parameter) [type: bool, default=True]
+        :arg color: color of the distribution line [type: string, default='darkslateblue']
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
         :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
         :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de uma plotagem de volumetrias (barras)
+        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{cat_col}_{value_col}_{aggreg}plot.png']
 
-    Aplicação
-    ---------
+    Return
+    ------
+    This functions returns nothing besides the complete analysis chart based on given parameters
+
+    Application
+    -----------
     plot_cat_aggreg_report(df=df, cat_col="categoric_column", value_col="numeric_column")
     """
 
-    # Validando presença das colunas na base
+    # Verifying if cat_col and value_col are on dataset columns
     if cat_col not in df.columns:
-        print(f'Coluna "cat_col" não presente na base')
+        print(f'Column {cat_col} is not on the dataset. Please change "cat_col" parameter.')
         return
     elif value_col not in df.columns:
-        print(f'Coluna "value_col" não presente na base')
+        print(f'Column {value_col} is not on the dataset. Please change "value_col" parameter.')
+        return
     
     # Extraindo parâmetros adicionais da função
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, 5)
@@ -1431,51 +1043,50 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 12
     top = kwargs['top'] if 'top' in kwargs else -1
     
-    # Validando tipo de plotagem
+    # Validating distribution kind
     possible_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
     if dist_kind not in possible_kinds:
-        print(f'Parâmetro dist_kind inválido. Opções possívels: {possible_kinds}')
+        print(f'Invalid dist_kind parameter. Possible options: {possible_kinds}')
         return
     
-    # Construindo figura de plotgem para análise
+    # Building figure
     fig = plt.figure(constrained_layout=True, figsize=figsize)
 
-    # Definição de eixos usando GridSpec
+    # Axis definition using GridSpec
     gs = GridSpec(2, 3, figure=fig)
 
     ax1 = fig.add_subplot(gs[:, 0])
     ax2 = fig.add_subplot(gs[:, 1])
     ax3 = fig.add_subplot(gs[0, 2])
     ax4 = fig.add_subplot(gs[1, 2])
-    #fig, ax = plt.subplots(nrows=1, ncols=3, figsize=figsize)
     
-    # Gráfico 01 - countplot para cat_col
+    # Graph 01 - countplot for cat_col
     plot_countplot(df=df, col=cat_col, ax=ax1, hue=hue, palette=palette, order=order, title=title1,
                    orient=orient, size_title=size_title, size_labels=size_labels, top=top)
     
-    # Gráfico 02 - aggregation plot para cat_col e value_col
+    # Graph 02 - aggregation plot for cat_col and value_col
     order_labels = [item.get_text() for item in ax1.get_xticklabels()]
     plot_aggregation(df=df, group_col=cat_col, value_col=value_col, ax=ax2, aggreg=aggreg, title=title2,
                      size_title=size_title, size_labels=size_labels, orient=orient, order=order_labels)
     
-    # Gráfico 03 - análise estatística da variável
+    # Graph 03 - statistical analysis of value_col
     describe = df[value_col].describe()
     mean = int(round(describe['mean'], 0))
     median = int(round(describe['50%'], 0))
     std = int(round(describe['std'], 0))
     
-    # Extraindo parâmetros do terceiro bloco
+    # Extracting parameters for the third block
     len_mean = len(str(mean))
     len_median = len(str(median))
     
-    # Posicionamento e descrição do texto inicial de apresentação
+    # Handling description text positioning
     desc_text_x_pos = kwargs['desc_text_x_pos'] if 'desc_text_x_pos' in kwargs else 0.50
     desc_text_y_pos = kwargs['desc_text_y_pos'] if 'desc_text_y_pos' in kwargs else 0.75
-    tmp_desc_text = f'Análise estatística da variável {value_col}\nem todo o conjunto de dados'
+    tmp_desc_text = f'A statistical approac for {value_col}\nusing the data available'
     desc_text = kwargs['desc_text'] if 'desc_text' in kwargs else tmp_desc_text
     desc_text_font = kwargs['desc_text_font'] if 'desc_text_font' in kwargs else 12
     
-    # Posicionamento e descrição das referências estastísticas
+    # Handling positioning of statistical text titles
     stat_title_x_pos = kwargs['stat_title_x_pos'] if 'stat_title_x_pos' in kwargs else 0.17
     stat_title_y_pos = kwargs['stat_title_y_pos'] if 'stat_title_y_pos' in kwargs else desc_text_y_pos-.2
     stat_title_mean = kwargs['stat_title_mean'] if 'stat_title_mean' in kwargs else 'Média'
@@ -1484,15 +1095,15 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     stat_title_font = kwargs['stat_title_font'] if 'stat_title_font' in kwargs else 14
     inc_x_pos = kwargs['inc_x_pos'] if 'inc_x_pos' in kwargs else 18
     
-    # Posicionamento e descrição dos indicadores estatísticos
+    # Handling positioning of statistical values
     stat_x_pos = kwargs['stat_x_pos'] if 'stat_x_pos' in kwargs else .17
     stat_y_pos = kwargs['stat_y_pos'] if 'stat_y_pos' in kwargs else stat_title_y_pos-.22
     
-    # Plotando texto inicial    
+    # Plotting description text on ax3 axis
     ax3.text(desc_text_x_pos, desc_text_y_pos, desc_text, fontsize=desc_text_font, ha='center', 
                color='black')
     
-    # Plotando títulos das referências estsatísticas
+    # Plotting titles of statistical parameters
     ax3.text(stat_title_x_pos, stat_title_y_pos, stat_title_mean, fontsize=stat_title_font, 
                ha='center', color='black', style='italic')
     stat_title_x_pos += len_mean/inc_x_pos
@@ -1502,7 +1113,7 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     ax3.text(stat_title_x_pos, stat_title_y_pos, stat_title_std, fontsize=stat_title_font, 
                ha='center', color='black', style='italic')
     
-    # Plotando indicadores estatísticos
+    # Plotting statistical parameters
     ax3.text(stat_x_pos, stat_y_pos, mean, fontsize=stat_title_font, ha='center', color='white', style='italic', weight='bold',
              bbox=dict(facecolor='navy', alpha=0.5, pad=10, boxstyle='round, pad=.7'))
     stat_x_pos += len_mean/inc_x_pos
@@ -1512,13 +1123,13 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     ax3.text(stat_x_pos, stat_y_pos, std, fontsize=stat_title_font, ha='center', color='white', style='italic', weight='bold',
              bbox=dict(facecolor='navy', alpha=0.5, pad=10, boxstyle='round, pad=.7'))
      
-    # Formatando eixo
+    # Formatting axis
     ax3.axis('off')
     ax3.set_title(title3, size=16, weight='bold', pad=20)
     
-    # Gráfico 04 - distplot da variável value_col    
+    # Graph 04 - distplot for value_col    
     
-    # Parâmetros adicionais de plotagem
+    # Extracting additional parameters
     hist = kwargs['hist'] if 'hist' in kwargs else True
     kde = kwargs['kde'] if 'kde' in kwargs else True
     rug = kwargs['rug'] if 'rug' in kwargs else False
@@ -1526,6 +1137,7 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
     palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
     
+    # Plotting distribution chart using plot_distplot() based on kind parameter
     if dist_kind in ['dist', 'kde']:
         plot_distplot(df=df, col=value_col, ax=ax4, kind=dist_kind, hue=None, hist=hist, kde=kde, rug=rug,
                       shade=shade, color=color, palette=palette, title=title4, size_title=size_title)
@@ -1533,115 +1145,611 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
         plot_distplot(df=df, col=value_col, ax=ax4, kind=dist_kind, hue=cat_col, hist=hist, kde=kde, rug=rug,
                       shade=shade, color=color, palette=palette, title=title4, size_title=size_title)
     
+    # Tighting layout
     plt.tight_layout()
 
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{cat_col}_{value_col}_{aggreg}plot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+     2.5 General overview and correlation matrix
+---------------------------------------------------
+"""
+
+# An overview from the data and its attributes
+def data_overview(df, **kwargs):
+    """
+    Extract useful information parameters of a given dataset to offers a general overview from the data
+    
+    Parameters
+    ----------
+    :param df: dataset used for content analysis [type: pd.DataFrame]
+    :param **kwargs: additional parameters
+        :arg corr: flag for applying correlation analysis [type: bool, default=False]
+        :arg corr_method: correlation method in case of correlation analysis to be applied [type: string, default='pearson'] 
+            *options: ['pearson', 'kendall', 'spearman']
+        :arg target: column to be used as target of correlation analysis [type: string, default=None]
+        :arg thresh_corr: threshold for filtering corr >= threshold [type: float, default=None]
+        :arg thresh_null: threshold for filtering qtd_null >= threshold [type: float, default=0]
+        :arg thresh_pct_null: percentual threshold para filtering pct_null >= threshold [type: float, default=0]
+        :arg sort: overview attribute to be sorted on the final dataset [type: string, defaul='qtd_null']
+        :arg ascending: sorting flag [type: bool, default=False]
+
+    Return
+    ------
+    :return df_overview: dataset with general parameters of each column of the original data
+    
+    Application
+    -----------
+    df_overview = data_overview(df=df, corr=True, target='target')
+    """
+    
+    # Returning null data on the given dataset
+    df_null = pd.DataFrame(df.isnull().sum()).reset_index()
+    df_null.columns = ['feature', 'qtd_null']
+    df_null['pct_null'] = df_null['qtd_null'] / len(df)
+    
+    # Returning dtypes and total of categories entries from categorical attributes
+    df_null['dtype'] = df_null['feature'].apply(lambda x: df[x].dtype)
+    df_null['qtd_cat'] = [len(df[col].value_counts()) if df[col].dtype == 'object' else 0 for col in 
+                          df_null['feature'].values]
+    
+    # Returning additional parameters of the function
+    corr = kwargs['corr'] if 'corr' in kwargs else False
+    corr_method = kwargs['corr_method'] if 'corr_method' in kwargs else 'pearson'
+    target = kwargs['target'] if 'target' in kwargs else None
+    thresh_corr = kwargs['thresh_corr'] if 'thresh_corr' in kwargs else None
+    thresh_null = kwargs['thresh_null'] if 'thresh_null' in kwargs else 0
+    thresh_pct_null = kwargs['thresh_pct_null'] if 'thresh_pct_null' in kwargs else 0   
+    sort = kwargs['sort'] if 'sort' in kwargs else 'qtd_null'
+    ascending = kwargs['sort_ascending'] if 'sort_ascending' in kwargs else False
+    
+    # Validating correlation parameters
+    if corr and target is None:
+        print(f"When corr=True it's also needed to define 'target' parameter")
+        return
+    
+    if corr and target is not None:
+        # Extracting correlation
+        target_corr = pd.DataFrame(df.corr(method=corr_method)[target])
+        target_corr = target_corr.reset_index()
+        target_corr.columns = ['feature', f'target_{corr_method}_corr']
+        
+        # Joining data and filtering based on correlation threshold
+        df_overview = df_null.merge(target_corr, how='left', on='feature')
+        if thresh_corr is not None:
+            df_overview = df_overview[df_overview[f'target_{corr_method}_corr'] > thresh_corr]
+            
+    else:
+        # Correlation analysis won't be applied
+        df_overview = df_null
+        
+    # Filtering null data based on null thresholds
+    df_overview = df_overview.query('pct_null >= @thresh_null')
+    df_overview = df_overview.query('qtd_null >= @thresh_pct_null')
+    
+    # Sorting the final dataset
+    df_overview.sort_values(by=sort, ascending=ascending, inplace=True)
+    df_overview.reset_index(drop=True, inplace=True)
+    
+    return df_overview
+
+# A beautiful correlation matrix
+def plot_corr_matrix(df, corr_col, corr='positive', **kwargs):
+    """
+    Plots a beautiful and custom correlation matrix for a given dataset and a target column
+    
+    Parameters
+    ----------
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param corr_col: column to be used as the target on correlation analysis [type: string]
+    :param corr: kind of correlation (positive or negative) [type: string, default='positive']
+    :param **kwargs: additional parameters
+        :arg n_vars: number of features to be plotted [type: int, default=len(num_features)]
+        :arg title: chart title [type: string]
+            *default: f'Top {n_vars} Features with {corr.title()} Correlation \nwith Target {corr_col}'
+        :arg figsize: figure dimension [type: tuple, default=(10, 10)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg size_title: title size [type: int, default=16]
+        :arg cbar: flag for showing a right sided color bar [type: bool, default=True]
+        :arg annot: flag for showing labels on matrix cells [type: bool, default=True]
+        :arg square: flag for set matrix dimension as a square [type: bool, default=True]
+        :arg fmt: labels formatting of the matrix [type: string, default='.2f']
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{corr_col}_{kind[:3]}_corr_mx.png']
+    
+    Return
+    ------
+    This function returns nothing besides plotting the correlation matrix chart
+
+    Application
+    -----------
+    plot_corr_matrix(df=df, corr_col='target')
+    """
+    
+    # Creating a correlation matrix for the DataFrame
+    corr_mx = df.corr()
+    
+    # Extracting numerical features from the dataset and filtering n_vars if applicable
+    num_features = [col for col, dtype in df.dtypes.items() if dtype != 'object']
+    n_vars = kwargs['n_vars'] if 'n_vars' in kwargs else len(num_features)
+    title = f'Top {n_vars} Features with {corr.title()} Correlation \nwith Target {corr_col}'
+
+    # Associating parameters based on type of correlation
+    if corr == 'positive':
+        # Returning top n_vars columns with positive correlation and setting cmap
+        corr_cols = list(corr_mx.nlargest(n_vars+1, corr_col)[corr_col].index)
+        cmap = kwargs['cmap'] if 'cmap' in kwargs else 'YlGnBu'
+        
+    elif corr == 'negative':
+        # Returning top n_vars columns with negative correlation and setting cmap
+        corr_cols = list(corr_mx.nsmallest(n_vars+1, corr_col)[corr_col].index)
+        corr_cols = [corr_col] + corr_cols[:-1]
+        cmap = kwargs['cmap'] if 'cmap' in kwargs else 'magma'
+        
+    # Creating a correlation array using np.corrcoef
+    corr_data = np.corrcoef(df[corr_cols].values.T)
+
+    # Setting up general parameters of the chart
+    figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 10)
+    ax = kwargs['ax'] if 'ax' in kwargs else None
+    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
+    cbar = kwargs['cbar'] if 'cbar' in kwargs else True
+    annot = kwargs['annot'] if 'annot' in kwargs else True
+    square = kwargs['square'] if 'square' in kwargs else True
+    fmt = kwargs['fmt'] if 'fmt' in kwargs else '.2f'
+    
+    # Plotting the matrix as heatmap function
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    sns.heatmap(corr_data, ax=ax, cbar=cbar, annot=annot, square=square, fmt=fmt, cmap=cmap,
+                yticklabels=corr_cols, xticklabels=corr_cols)
+    ax.set_title(title, size=size_title, color='black', pad=20)
+
+    # Saving image if applicable
+    if 'save' in kwargs and bool(kwargs['save']):
+        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{corr_col}_{kind[:3]}_corr_mx.png'
+        save_fig(fig=fig, output_path=output_path, img_name=img_name)
+
+
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+        2.6 Multiple plots at one function
+---------------------------------------------------
+"""
+
+# Multiple distplots
+def plot_multiple_distplots(df, col_list, n_cols=3, kind='dist', **kwargs):
+    """
+    Plots custom distribution charts for multiple columns at once using the col_list parameter
+    
+    Parameters
+    ----------
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col_list: list with numerical columns to be used on analysis [type: list]
+    :param n_cols: figure columns configured for this multiple graph [type: int, default=3]
+    :param kind: kind of distribution plot [type: string, default='dist']
+        *options: ['dist', 'kde', 'box', 'boxen', 'strip']
+    :param **kwargs: additional parameters
+        :arg figsize: figure dimension [type: tuple, default=(10, n_rows * 5)]
+            *where n_rows = ceil(len(col_list) / n_cols)
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=False]
+        :arg kde: plots kde line on the chart (seaborn's parameter) [type: bool, default=True]
+        :arg rug: plots rug at the bottom of the the chart (seaborn's parameter) [type: bool, default=False]
+        :arg shade: fills the area below distribution curve (seaborn's parameter) [type: bool, default=True]
+        :arg color: color of the distribution line [type: string, default='darkslateblue']
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg size_title: title size [type: int, default=16]
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'multiple_{kind}plot.png']    
+
+    Return
+    ------
+    This function returns nothing besides plotting the multiple distribution charts
+
+    Application
+    ---------
+    plot_multiple_distplots(df=df, col_list['colA', 'colB', 'colC'])
+    """
+    
+    # Validating kind of the chart to be plotted
+    possible_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
+    if kind not in possible_kinds:
+        print(f'Invalid "kind" parameter. Please choose between: {possible_kinds}')
+    
+    # Computing figure parameters for axis structure
+    n_rows = ceil(len(col_list) / n_cols)
+    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
+    i, j = 0, 0
+    
+    # Extracting additional parameters for the charts
+    hist = kwargs['hist'] if 'hist' in kwargs else True
+    kde = kwargs['kde'] if 'kde' in kwargs else True
+    rug = kwargs['rug'] if 'rug' in kwargs else False
+    shade = kwargs['shade'] if 'shade' in kwargs else True
+    color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
+    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
+    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
+    
+    # Creating a figure with multiple axis and iterating over them
+    fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=figsize)
+    for col in col_list:
+        # Indexing axis
+        try:
+            ax = axs[i, j]
+        except IndexError as ie:
+            # For one-dimensional figure, it's necessary to index axis as a vector and not as a matrix
+            ax = axs[j]
+        title = f'{kind.title()} for {col}'
+        
+        # Plotting distribution plot with all parameters extracted
+        plot_distplot(df=df, col=col, ax=ax, kind=kind, hue=hue, hist=hist, kde=kde, rug=rug,
+                      shade=shade, color=color, palette=palette, title=title, size_title=size_title)
+        
+        # Stepping up index
+        j += 1
+        if j >= n_cols:
+            j = 0
+            i += 1
+            
+    # Special case: empty figures at the end of iteration
+    i, j = 0, 0
+    for n_plots in range(n_rows * n_cols):
+
+        # If axis index is greater than number of features, hides the axis border
+        if n_plots >= len(col_list):
+            try:
+                axs[i][j].axis('off')
+            except TypeError as e:
+                axs[j].axis('off')
+
+        # Stepping up index
+        j += 1
+        if j == n_cols:
+            j = 0
+            i += 1 
+    
+    # Tighting layout
+    plt.tight_layout()
+
+    # Saving image if applicable
+    if 'save' in kwargs and bool(kwargs['save']):
+        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'multiple_{kind}plot.png'
+        save_fig(fig=fig, output_path=output_path, img_name=img_name)
+  
+# Multiple distplots with scatterplots (regplot)
+def plot_multiple_dist_scatterplot(df, col_list, y_col, dist_kind='dist', scatter_kind='reg', 
+                                   **kwargs):
+    """
+    Plots a rich graph that joins a distribution and a scatterplot
+    
+    Parameters
+    ----------
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col_list: list with numerical columns to be used on analysis [type: list]
+    :param y_col: y columns to be used on y axis of the scatterplot [type: string]
+    :param dist_kind: kind of distribution plot [type: string, default='dist']
+        *options: ['dist', 'kde', 'box', 'boxen', 'strip']
+    :param scatter_kind: kind of scatter correlation plot [type: string, default='reg']
+        *options: ['scatter', 'reg']
+    :param **kwargs: additional parameters  
+        :arg figsize: figure dimension [type: tuple, default=(10, n_rows * 5)]
+            *where n_rows = ceil(len(col_list) / n_cols)
+        :arg title1: distribution plot title [type: string, default=f'{dist_kind.title()} for Feature {col}']
+        :arg title2: scatterplot title [type: string, default=f'{scatter_kind.title()}plot Between {col} and {y_col}']
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=False]
+        :arg kde: plots kde line on the chart (seaborn's parameter) [type: bool, default=True]
+        :arg rug: plots rug at the bottom of the the chart (seaborn's parameter) [type: bool, default=False]
+        :arg shade: fills the area below distribution curve (seaborn's parameter) [type: bool, default=True]
+        :arg color: color of the distribution line [type: string, default='darkslateblue']
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg size_title: title size [type: int, default=16]
+        :arg alpha: transparency of scatterplot circles [type: float, default=.7]
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{dist_kind}_{scatter_kind}plot.png']
+    
+    Return
+    ------
+    This function returns nothing besides plotting the dist and scatter combination for multiple columns
+
+    Application
+    -----------
+    plot_multiple_dist_scatterplot(df=df, col_list['colA', 'colB'], y_col='numeric_col')
+    """
+    
+    # Validating kinds in dist and scatter plot configuration
+    possible_dist_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
+    possible_scatter_kinds = ['scatter', 'reg']
+    if dist_kind not in possible_dist_kinds:
+        print(f'Invalid dist_kind parameter. Possible options: {possible_kinds}')
+        return
+    if scatter_kind not in possible_scatter_kinds:
+        print(f'Invalid scatter_kind parameter. Possible options: {possible_scatter_kinds}')
+        return
+    
+    # Validating y_col on list of dataset columns
+    if y_col not in list(df.columns):
+        print(f'There is no {y_col} on the given daset. Please change "y_col" parameter')
+        return
+    
+    # Computing figure parameters
+    n_rows = len(col_list)
+    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
+    i = 0
+    
+    # Extracting parameters for plotting the graphs
+    hue = kwargs['hue'] if 'hue' in kwargs else None
+    hist = kwargs['hist'] if 'hist' in kwargs else True
+    kde = kwargs['kde'] if 'kde' in kwargs else True
+    rug = kwargs['rug'] if 'rug' in kwargs else False
+    shade = kwargs['shade'] if 'shade' in kwargs else True
+    color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
+    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
+    size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
+    
+    # Creating figure and iteration over the multiple axis
+    fig, axs = plt.subplots(nrows=n_rows, ncols=2, figsize=figsize)
+    for col in col_list:
+        # Indexing axis on the first column (j = 0) for distribution chart
+        try:
+            ax = axs[i, 0]
+        except IndexError as ie:
+            # For one-dimensional figure, it's necessary to index axis as a vector and not as a matrix
+            ax = axs[0]
+        title1 = kwargs['title1'] if 'title1' in kwargs else f'{dist_kind.title()} for Feature {col}'
+        
+        # Plotting a distribution chart using plot_distplot xplotter function
+        plot_distplot(df=df, col=col, ax=ax, kind=dist_kind, hue=hue, hist=hist, kde=kde, rug=rug,
+                      shade=shade, color=color, palette=palette, title=title1, size_title=size_title)
+        
+        # Indexing axis on the second column (j = 1) for scatterplot
+        try:
+            ax2 = axs[i, 1]
+        except IndexError as ie:
+            # For one-dimensional figure, it's necessary to index axis as a vector and not as a matrix
+            ax2 = axs[1]
+        alpha = kwargs['alpha'] if 'alpha' in kwargs else .7
+        
+        # Scatterplot
+        if scatter_kind == 'scatter':
+            sns.scatterplot(x=col, y=y_col, data=df, color=color, ax=ax2)
+            
+        # Regplot
+        if scatter_kind == 'reg':
+            sns.regplot(x=col, y=y_col, data=df, color=color, ax=ax2)
+        
+        # Stepping up i index
+        i += 1
+        
+        # Customizing chart
+        format_spines(ax2, right_border=False)
+        title2 = kwargs['title2'] if 'title2' in kwargs else f'{scatter_kind.title()}plot Between {col} and {y_col}'
+        ax2.set_title(title2, size=size_title)
+        if dist_kind in ['dist', 'kde'] and hue is not None:
+            ax.legend(title=hue)
+
+    # Tighting layout        
+    plt.tight_layout()
+
+    # Saving image if applicable
+    if 'save' in kwargs and bool(kwargs['save']):
+        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{dist_kind}_{scatter_kind}plot.png'
+        save_fig(fig=fig, output_path=output_path, img_name=img_name)
+
+# Multiple countplots
+def plot_multiple_countplots(df, col_list, n_cols=3, **kwargs):
+    """
+    Plots multiple formatted countplot based on a list of columns of a given dataset
+    
+    Parameters
+    ----------
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col_list: list with numerical columns to be used on analysis [type: list]
+    :param n_cols: figure columns configured for this multiple graph [type: int, default=3]
+    :param **kwargs: additional parameters
+        :arg figsize: figure dimension [type: tuple, default=(10, n_rows * 5)]
+            *where n_rows = ceil(len(col_list) / n_cols)
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg order: sorts categories into a defined order [type: bool, default=None]
+        :arg orient: horizontal or vertical orientation [type: string, default='v']
+        :arg size_title: title size [type: int, default=16]
+        :arg size_labels: label size [type: int, default=14]
+        :arg top: filter the top N categories on the chart [type: int, default=-1]
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'multiple_countplots.png']
+
+    Return
+    ------
+    This function returns nothing besides plotting multiple countplot charts
+
+    Application
+    -----------
+    plot_multiple_countplots(df=df, col_list=['colA', 'colB'])
+    """
+    
+    # Setting up figure for multiple plots
+    n_rows = ceil(len(col_list) / n_cols)
+    figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, n_rows * 5)
+    i, j = 0, 0
+    
+    # Extracting additional parameters for the charts
+    hue = kwargs['hue'] if 'hue' in kwargs else None
+    palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
+    order = df[col].value_counts().index if 'order' in kwargs and bool(kwargs['order']) else None
+    orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
+    size_title = kwargs['size_title'] if 'size_title' in kwargs else 12
+    size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 12
+    top = kwargs['top'] if 'top' in kwargs else -1
+    
+    # Creating figure and iteration over the multiple axis generated
+    fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=figsize)
+    for col in col_list:
+        # Indexing axis
+        try:
+            ax = axs[i, j]
+        except IndexError as ie:
+            # For one-dimensional figure, it's necessary to index axis as a vector and not as a matrix
+            ax = axs[j]
+        
+        title = kwargs['title'] if 'title' in kwargs else f'Countplot for Feature {col}'
+        
+        # Building the countplot chart by calling plot_countplot function using parameters associated
+        plot_countplot(df=df, col=col, ax=ax, hue=hue, palette=palette, order=order, title=title,
+                       orient=orient, size_title=size_title, size_labels=size_labels, top=top)
+                    
+        # Stepping up index
+        j += 1
+        if j == n_cols:
+            j = 0
+            i += 1
+            
+    # Special case: empty figures at the end of iteration
+    i, j = 0, 0
+    for n_plots in range(n_rows * n_cols):
+
+        # If axis index is greater than number of features, eliminates the axis border
+        if n_plots >= len(col_list):
+            try:
+                axs[i][j].axis('off')
+            except TypeError as e:
+                axs[j].axis('off')
+
+        # Stepping up index
+        j += 1
+        if j == n_cols:
+            j = 0
+            i += 1 
+    
+    # Tighting layout
+    plt.tight_layout()      
+
+    # Saving image if applicable
+    if 'save' in kwargs and bool(kwargs['save']):
+        output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'multiple_countplots.png'
+        save_fig(fig=fig, output_path=output_path, img_name=img_name)
+
+
+"""
+---------------------------------------------------
+---------- 2. CUSTOM GRAPHICAL ANALYSIS -----------
+        2.7 Line charts for evolution plots
+---------------------------------------------------
+"""
+
+# A date-like evolution plot
 def plot_evolutionplot(df, x, y, agg=True, agg_functions=['count', 'sum', 'mean'], 
                           agg_type='count', **kwargs):
     """
-    Função responsável por realizar uma plotagem de evolução, em um gráfico de linhas,
-    com base principal em análises de data no eixo x. Opcionalmente, é possível configurar
-    a função para realizar o procedimento de agregação de forma interna, sendo necessário
-    passar apenas a base bruta no argumento "df" e configurar os arugmento "agg",
-    "agg_functions" e "agg_type"
+    Plots an evolution plot in a line chart. This function is main useful when passed a date
+    column referente as x parameter. Optionally, it's possible to configure de function
+    to aggregate values internaly.
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param x: coluna a ser posicionada no eixo x (representação de data) [type: string]
-    :param y: coluna a ser analisada no eixo y (agregação) [type: string]
-    :param agg: flag para aplicação do agrupamento dentro da função [type: bool, default=True]
-    :param agg_functions: lista de agregadores a serem aplicados [type: list, default=['count', 'sum', 'mean']]
-    :param agg_type: tipo de agregação a ser analisada no gráfico [type: string, default='count']
-    :param **kwargs: parâmetros adicionais da função   
-        :arg hue: parâmetro hue para quebra de plotagem [type: string, default=None]
-        :arg str_col: flag de coluna de string no eixo x [type: string, default=True] 
-        :arg date_col: flag de coluna de data no eixo x [type: string, default=True]
-        :arg date_fmt: formato da data a ser aplicado na transformação [type: string, default='%Y%m']
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(17, 7)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow_r']
-        :arg color: cor a ser utilizada na plotagem [type: string, default='darkslateblue']
-        :arg title: título do gráfico [type: string, default=f'Lineplot - {agg_type.title()} de {y_ori} por {x}']
-        :arg markers: parâmetro markers da função sns.lineplot() [type: bool, default=False]
-        :arg style: parâmetro style da função sns.lineplot() [type: string, default=None]
-        :arg size: parâmetro size da função sns.lineplot() [type: string, default=None]
-        :arg sort: parâmetro sort da função sns.lineplot() [type: bool, default=False]
-        :arg x_rot: rotação do eixo x dos labels [type: int, default=90]
-        :arg label_data: flag para inserção de rótulos nas linhas [type: bool, default=True]
-        :arg label_aggreg: seleção de agregação do rótulo [type: string, default='K']
-            *opções: ['', 'K', 'M', 'B']
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param x: column reference for x axis (date representation) [type: string]
+    :param y: column reference for y axis (aggregation) [type: string]
+    :param agg: flag for applying aggregation proccess inside function [type: bool, default=True]
+    :param agg_functions: aggregators list to be applied [type: list, default=['count', 'sum', 'mean']]
+    :param agg_type: aggregation type for plotting the line chart [type: string, default='count']
+    :param **kwargs: additional parameters
+        :arg hue: breaks the chart into another category [type: string, default=None]
+        :arg str_col: flag for changing dtype of x column into string [type: bool, default=True]
+        :arg date_col: flag for changing dtype of x column into date [type: bool, default=True]
+        :arg date_fmt: in case of date transformation, this parameter sets de format [type: string, default='%Y%m']
+        :arg figsize: figure dimension [type: tuple, default=(17, 7)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg color: color of the distribution line [type: string, default='darkslateblue']
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow_r']
+        :arg markers: flag para putting markers on line chart [type: bool, default=True]
+        :arg style: seaborn style function parameter [type: string, default=None]
+        :arg size: seaborn size function parameter [type: string, default=None]
+        :arg sort: flag for sorting the data [type: bool, default=False]
+        :arg x_rot: x axis label rotation [type: int, default=90]
+        :arg title: chart title [type: string, default=f'Lineplot of {agg_type.title()} of {y_ori} by {x}']
+        :arg label_data: flag for putting labels on data points [type: bool, default=True]
+        :arg label_aggreg: label aggregation if it's too big [type: string, default='K']
+            *options: ['', 'K', 'M', 'B']
     
-    Retorno
+    Returns
     -------
-    Essa função não retorna nenhum parâmetro além de uma plotagem de evolução (linhas)
+    This function returns nothing besides the evolution plot
 
-    Aplicação
-    ---------
+    Application
+    -----------
     plot_evolutionplot(df=df, x='date_col', y='num_col', agg_type='sum', date_col=False, x_rot=0)
     """
     
-    # Definindo função de agregação
+    # Defining an aggregation function to be used inside function
     def make_aggregation(df, group_col, value_col, agg_functions=['count', 'sum', 'mean'], **kwargs):
-    
-        # Agrupando dados de acordo com a especificação definida
+        # Grouping data using the agg_functions list
         agg_dict = {value_col: agg_functions}
-        df_group = df.groupby(by=group_col, as_index=False).agg(agg_dict)
-
-        return df_group
+        return df.groupby(by=group_col, as_index=False).agg(agg_dict)
     
-    # Validando presença das colunas x e y na base
+    # Verifying columns x and y inside dataset columns
     y_ori = y
     if x not in df.columns:
-        print(f'Coluna "x"={x} não presente na base')
+        print(f'Column "x"={x} is not in the given dataset')
         return
     if y not in df.columns:
-        print(f'Coluna "y"={y} não presente na base')
+        print(f'Column "y"={y} is not in the given dataset')
         return
     
-    # Extraindo parâmetros úteis de quebra de plotagem
+    # Extracting hue parameter and creating a "dummy" column with it if applicable
     hue = kwargs['hue'] if 'hue' in kwargs else None
     if hue:
         df[hue] = df[hue].astype(str)
     
-    # Verificando necessidade de agregar dataset
+    # Applying aggregation on data if applicable
     if agg:
         group_col = [x, hue] if hue else x
         new_columns = [x, hue] + agg_functions if hue else [x] + agg_functions
         df_group = make_aggregation(df=df, group_col=group_col, value_col=y, agg_functions=agg_functions)
         
-        # Verificando tipo de agrupamento a ser plotado no gráfico de linhas
+        # Aggregating based no parameteres passed
         if agg_type not in agg_functions:
-            print(f'Argumento "agg_type" não presente na lista "agg_functions"')
+            print(f'Parameter "agg_type={agg_type}" is not present on "agg_functions={agg_functions}"')
             return
         
-        # Atualizando coluna y e df da plotagem de acordo com a agregação
+        # Updatig y colum and df according to aggregation result
         df_group.columns = new_columns
         y = agg_type
     else:
         df_group = df     
         
-    # Extraindo parâmetros de transformação das colunas
+    # Extracting transformation parameters of the columns
     str_col = kwargs['str_col'] if 'str_col' in kwargs else True
     date_col = kwargs['date_col'] if 'date_col' in kwargs else True
     date_fmt = kwargs['date_fmt'] if 'date_fmt' in kwargs else '%Y%m'
     
-    # Transformando colunas (string e data)
+    # Transforming columns (string and date)
     if str_col:
         df_group[x] = df_group[x].astype(str)
     if date_col:
         try:
             df_group[x] = df_group[x].apply(lambda st: datetime.strptime(str(st), date_fmt))
         except ValueError as ve:
-            print(f'{ve}. Modifique o argumento "date_fmt" ou configure "date_col=False"')
-            print(f'')
+            print(f'{ve}. Change "date_fmt" parameter or set "date_col=False"\n')
     
-    # Extraindo parâmetros adicionais do gráfico
+    # Extracting chart parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (17, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     color = kwargs['color'] if 'color' in kwargs else 'darkslateblue'
@@ -1651,41 +1759,41 @@ def plot_evolutionplot(df, x, y, agg=True, agg_functions=['count', 'sum', 'mean'
     size = kwargs['size'] if 'size' in kwargs else None
     sort = kwargs['sort'] if 'sort' in kwargs else False
     
-    # Plotando gráfico
+    # Plotting graph using seaborn's lineplot function
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     sns.lineplot(x=x, y=y, data=df_group, ax=ax, hue=hue, color=color, palette=palette, 
                  markers=markers, style=style, size=size, sort=sort)
     
-    # Extraindo indicadores de formatação de plotagem
+    # Extracting parameters for customizing the chart
     x_rot = kwargs['x_rot'] if 'x_rot' in kwargs else 90
     title = kwargs['title'] if 'title' in kwargs else f'Lineplot - {agg_type.title()} de {y_ori} por {x}'
     label_data = kwargs['label_data'] if 'label_data' in kwargs else True
     label_aggreg = kwargs['label_aggreg'] if 'label_aggreg' in kwargs else 'K'
     label_aggreg_options = ['', 'K', 'M', 'B']
     if label_aggreg not in label_aggreg_options:
-        print(f'Parâmetro "label_aggreg" {label_aggreg} deve estar entre {label_aggreg_options}. Revertendo para "None"')
+        print(f'Parameter "label_aggreg" {label_aggreg} must be one of {label_aggreg_options}. Reverting to ""')
         label_aggreg = ''   
     label_aggreg_dict = {'': 1, 'K': 1000, 'M': 1000000, 'B': 1000000000}
     label_aggreg_value = label_aggreg_dict[label_aggreg]
     
-    # Formatando plotagem
+    # Customizing chart
     format_spines(ax, right_border=False)
     for tick in ax.get_xticklabels():
         tick.set_rotation(x_rot)
     ax.set_title(title, size=16)
     
-    # Rótulando dados
+    # Labeling data
     if label_data:
         for x, y in zip(df_group[x], df_group[y]):
             ax.annotate(str(round(y/label_aggreg_value, 2))+label_aggreg, xy=(x, y), 
                         textcoords='data', ha='center', va='center', color='dimgrey')
 
-    # Verificando salvamento da imagem
+    # Tighting layout
+    plt.tight_layout()
+
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{x}_{y}evlplot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
-    
-    plt.tight_layout()
-
