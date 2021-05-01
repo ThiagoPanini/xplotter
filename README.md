@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://pypi.org/project/xplotter/"><img src="https://i.imgur.com/mJ1ExBQ.jpg" height=400, weight=400, alt="xplotter logo"></a>
+  <a href="https://pypi.org/project/xplotter/"><img src="https://i.imgur.com/5XFP1Ha.png" height=400, weight=400, alt="xplotter logo"></a>
 </h1>
 
 <div align="center">
