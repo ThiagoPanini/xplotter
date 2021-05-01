@@ -50,45 +50,45 @@ from xplotter.formatter import make_autopct, format_spines, AnnotateBars
 
 # Saving figures generated from matplotlib
 def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
-        """
-        Método responsável por salvar imagens geradas pelo matplotlib/seaborn
+    """
+    Saves figures created from matplotlib/seaborn
 
-        Parâmetros
-        ----------
-        :param fig: figura criada pelo matplotlib para a plotagem gráfica [type: plt.figure]
-        :param output_file: caminho final a ser salvo (+ nome do arquivo em formato png) [type: string]
-        :param tight_layout: flag que define o acerto da imagem [type: bool, default=True]
-        :param dpi: resolução da imagem a ser salva [type: int, default=300]
+    Parameters
+    ----------
+    :param fig: figure created using matplotlib [type: plt.figure]
+    :param output_file: path for image to be saved (path + filename in png format) [type: string]
+    :param tight_layout: flag for tighting figure layout before saving it [type: bool, default=True]
+    :param dpi: image resolution [type: int, default=300]
 
-        Retorno
-        -------
-        Este método não retorna nenhum parâmetro além do salvamento da imagem em diretório especificado
+    Return
+    ------
+    This function returns nothing besides the image saved on the given path
 
-        Aplicação
-        ---------
-        fig, ax = plt.subplots()
-        save_fig(fig, output_file='imagem.png')
-        """
+    Application
+    ---------
+    fig, ax = plt.subplots()
+    save_fig(fig, output_file='image.png')
+    """
 
-        # Verificando se diretório existe
-        if not os.path.isdir(output_path):
-            print(f'Diretório {output_path} inexistente. Criando diretório no local especificado')
-            try:
-                os.makedirs(output_path)
-            except Exception as e:
-                print(f'Erro ao tentar criar o diretório {output_path}. Exception lançada: {e}')
-                return
-        
-        # Acertando layout da imagem
-        if tight_layout:
-            fig.tight_layout()
-        
+    # Searching for the existance of the directory
+    if not os.path.isdir(output_path):
+        print(f'Directory {output_path} not exists. Creating a directory on the given path')
         try:
-            output_file = os.path.join(output_path, img_name)
-            fig.savefig(output_file, dpi=300)
+            os.makedirs(output_path)
         except Exception as e:
-            print(f'Erro ao salvar imagem. Exception lançada: {e}')
+            print(f'Error on creating the directory {output_path}. Exception: {e}')
             return
+    
+    # Tighting layout
+    if tight_layout:
+        fig.tight_layout()
+    
+    try:
+        output_file = os.path.join(output_path, img_name)
+        fig.savefig(output_file, dpi=300)
+    except Exception as e:
+        print(f'Error on saving image. Exception: {e}')
+        return
 
 
 
@@ -100,7 +100,7 @@ def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
 
 def plot_donut_chart(df, col, **kwargs):
     """
-    Plots a custom donut chart for a specific column
+    Creates a custom donut chart for a specific column
     
     Parameters
     ----------
@@ -112,12 +112,12 @@ def plot_donut_chart(df, col, **kwargs):
         :arg circle_radius: central circle radius of the chart [type: float, default=0.8]
         :arg circle_radius_color: central circle color of the chart [type: string, default='white']
         :arg label_names: custom labels [type: dict, default=value_counts().index]
-        :arg top: filter the top N categories on plot [type: int]
+        :arg top: filter the top N categories on the chart [type: int]
         :arg colors: color list for customizing the chart [type: list]
         :arg text: text string to be put on central circle of the chart [type: string, default=f'Total: \n{sum(values)}']
-        :arg title: chart title [type: string, default=f'Donut Chart for Feature ${col}$']
+        :arg title: chart title [type: string, default=f'Donut Chart for Feature {col}']
         :arg autotexts_size: label size from the numerical value [type: int, default=14]
-        :arg autotexts_color: label color from the numerical valueo [type: int, default='black]
+        :arg autotexts_color: label color from the numerical value [type: int, default='black']
         :arg texts_size: label size from the chart [type: int, default=14]
         :arg texts_color: label color from the chart [type: int, default='black']
         :arg save: flag for saving the image created [type: bool, default=None]
@@ -126,16 +126,16 @@ def plot_donut_chart(df, col, **kwargs):
     
     Return
     -------
-    This function returns nothing besides the custom donut chart graphic
+    This function returns nothing besides the custom donut chart
 
     Application
     ---------
-    plot_donut_chart(df=df, col='categorical_column', label_names={1: 'Classe 1', 2: 'Classe 2'})
+    plot_donut_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
     
     # Validating column name on the given dataset
     if col not in df.columns:
-        print(f'There is no columns {col} on the given dataset')
+        print(f'There is no column {col} on the given dataset')
         return
 
     # Returning values and labels for plotting
@@ -157,7 +157,7 @@ def plot_donut_chart(df, col, **kwargs):
     color_list = ['darkslateblue', 'crimson', 'lightseagreen', 'lightskyblue', 'lightcoral', 'silver']
     colors = kwargs['colors'] if 'colors' in kwargs else color_list[:len(labels)]
 
-    # Plot parameters
+    # Setting up parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (8, 8)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     circle_radius = kwargs['circle_radius'] if 'circle_radius' in kwargs else 0.8
@@ -197,44 +197,44 @@ def plot_donut_chart(df, col, **kwargs):
 
 def plot_pie_chart(df, col, **kwargs):
     """
-    Função responsável por plotar um gráfico de rosca customizado para uma determinada coluna da base
+    Creates a custom pie chart for a specific column
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col: nome da coluna a ser analisada [type: string]
-    :param **kwargs: parâmetros adicionais da função
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg top: índice de filtro das top categorias a serem plotadas [type: int]
-        :arg colors: lista de cores para aplicação na plotagem [type: list]
-        :arg explode: parâmetro para separação da fatia do gráfico [type: tuple, default=(0,)]
-        :arg shadow: presença de sombra nas fatias do gráfico [type: bool, default=True]
-        :arg title: título do gráfico [type: string, default=f'Gráfico de Rosca para a Variável ${col}$']
-        :arg autotexts_size: dimensão do rótulo do valor numérico do gráfico [type: int, default=14]
-        :arg autotexts_color: cor do rótulo do valor numérico do gráfico [type: int, default='black]
-        :arg texts_size: dimensão do rótulo do label [type: int, default=14]
-        :arg texts_color: cor do rótulo do label [type: int, default='black']
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_donutchart.png']
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col: column name to be plotted [type: string]
+    :param **kwargs: additional parameters
+        :arg figsize: figure dimension [type: tuple, default=(8, 8)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg circle_radius: central circle radius of the chart [type: float, default=0.8]
+        :arg circle_radius_color: central circle color of the chart [type: string, default='white']
+        :arg label_names: custom labels [type: dict, default=value_counts().index]
+        :arg top: filter the top N categories on the chart [type: int]
+        :arg colors: color list for customizing the chart [type: list]
+        :arg title: chart title [type: string, default=f'Donut Chart for Feature {col}']
+        :arg autotexts_size: label size from the numerical value [type: int, default=14]
+        :arg autotexts_color: label color from the numerical value [type: int, default='black']
+        :arg texts_size: label size from the chart [type: int, default=14]
+        :arg texts_color: label color from the chart [type: int, default='black']
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}_piechart.png']
     
-    Retorno
+    Return
     -------
-    Essa função não retorna nenhum parâmetro além da plotagem customizada do gráfico de pizza
+    This function returns nothing besides the custom pie chart
 
-    Aplicação
+    Application
     ---------
-    plot_pie_chart(df=df, col='categorical_column', label_names={1: 'Classe 1', 2: 'Classe 2'})
+    plot_pie_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
-    
-    # Validando presença da coluna na base
+
+    # Validating column name on the given dataset
     if col not in df.columns:
-        print(f'Coluna {col} não presente na base')
+        print(f'There is no column {col} on the given dataset')
         return
 
-    # Retornando vales e labels para plotagem
+    # Returning labels ans values
     counts = df[col].value_counts()
     values = counts.values
     labels = counts.index
@@ -242,45 +242,44 @@ def plot_pie_chart(df, col, **kwargs):
         try:
             labels = labels.map(kwargs['label_names'])
         except Exception as e:
-            print(f'Erro ao mapear o dicionário label_names na coluna {col}. Exception: {e}')
+            print(f'Error on mapping the dict label_names on column {col}. Exception: {e}')
 
-    # Verificando filtro de top categorias na análise
+    # Filtering top N categories if applicable
     if 'top' in kwargs and kwargs['top'] > 0:
         values = values[:-kwargs['top']]
         labels = labels[:-kwargs['top']]
     
-    # Cores para a plotagem
+    # Colors for the chart
     color_list = ['darkslateblue', 'crimson', 'lightseagreen', 'lightskyblue', 'lightcoral', 'silver']
     colors = kwargs['colors'] if 'colors' in kwargs else color_list[:len(labels)]
 
-    # Parâmetros de plotagem
+    # Setting up parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (8, 8)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     explode = kwargs['explode'] if 'explode' in kwargs else (0,) * len(labels)
     shadow = kwargs['shadow'] if 'shadow' in kwargs else False
-    
 
-    # Plotando gráfico de rosca
+    # Plotting pie chart
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     wedges, texts, autotexts = ax.pie(values, labels=labels, colors=colors, autopct=make_autopct(values), 
                                       startangle=90, explode=explode, shadow=shadow)
     
-    # Definindo título
-    title = kwargs['title'] if 'title' in kwargs else f'Gráfico de Pizza para a Variável ${col}$'
+    # Defining title
+    title = kwargs['title'] if 'title' in kwargs else f'Pie Chart for Feature \n{col}'
     ax.set_title(title, size=16, color='dimgrey')
 
-    # Parâmetros de customização do gráfico gerado
+    # Customizing the chart
     autotexts_size = kwargs['autotexts_size'] if 'autotexts_size' in kwargs else 14
     autotexts_color = kwargs['autotexts_color'] if 'autotexts_color' in kwargs else 'white'
     texts_size = kwargs['texts_size'] if 'texts_size' in kwargs else 14
     texts_color = kwargs['texts_color'] if 'texts_stexts_colorize' in kwargs else 'black'
 
-    # Customizando rótulos
+    # Setting up labels
     plt.setp(autotexts, size=autotexts_size, color=autotexts_color)
     plt.setp(texts, size=texts_size, color=texts_color)
 
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_piechart.png'
@@ -288,66 +287,68 @@ def plot_pie_chart(df, col, **kwargs):
 
 def plot_double_donut_chart(df, col1, col2, **kwargs):
     """
-    Função responsável por plotar um gráfico de rosca customizado para uma determinada coluna da base
+    Creates a "double" custom donut chart for two columns of a giben dataset
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col1: nome da primeira coluna a ser analisada (outer) [type: string]
-    :param col1: nome da segunda coluna a ser analisada (inner) [type: string]
-    :param **kwargs: parâmetros adicionais da função
-        :arg label_names_col1: lista com rótulos da primeira coluna [type: list, default=value_counts().index]
-        :arg label_names_col2: lista com rótulos da segunda coluna [type: list, default=value_counts().index]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg circle_radius: raio do círculo central do gráfico [type: float, default=0.55]
-        :arg colors: lista de cores para aplicação na plotagem [type: list]
-        :arg text: texto central do gráfico de rosca [type: string, default=f'Total: \n{sum(values)}']
-        :arg title: título do gráfico [type: string, default=f'Gráfico Duplo de Rosca para ${col1}$ e ${col2}$']
-        :arg autotexts_size: dimensão do rótulo do valor numérico do gráfico [type: int, default=14]
-        :arg autotexts_color: cor do rótulo do valor numérico do gráfico [type: int, default='black]
-        :arg texts_size: dimensão do rótulo do label [type: int, default=14]
-        :arg texts_color: cor do rótulo do label [type: int, default='black']
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_donutchart.png']
-     
-    Retorno
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col1: outter column name to be plotted on the external part of the donut [type: string]
+    :param col1: inner column name to be plotted on the internal part of the donut [type: string]
+    :param **kwargs: additional parameters
+        :arg label_names_col1: label names for outter column of the donut [type: string]
+        :arg label_names_col2: label names for inner column of the donut [type: string]
+        :arg colors1: color list for outter column of the donut [type: list]
+        :arg colors2: color list for inner column of the donut [type: list]
+        :arg figsize: figure dimension [type: tuple, default=(8, 8)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
+        :arg circle_radius: central circle radius of the chart [type: float, default=0.55]
+        :arg circle_radius_color: central circle color of the chart [type: string, default='white']
+        :arg text: central text on the donut [type: string, default='']   
+        :arg title: chart title [type: string, default=f'Donut Chart for Feature {col}']
+        :arg autotexts_size: label size from the numerical value [type: int, default=14]
+        :arg autotexts_color: label color from the numerical value [type: int, default='black']
+        :arg texts_size: label size from the chart [type: int, default=14]
+        :arg texts_color: label color from the chart [type: int, default='black']
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}_piechart.png']
+    
+    Return
     -------
-    Essa função não retorna nenhum parâmetro além da plotagem customizada do gráfico duplo de rosca
+    This function returns nothing besides plotting the custom double donut chart
 
-    Aplicação
+    Application
     ---------
-    plot_donut_chart(df=df, col1='categorical_column', col2='categorical_column2)
+    plot_pie_chart(df=df, col='categorical_column', label_names={1: 'Class 1', 2: 'Class 2'})
     """
     
-    # Validando presença da coluna na base
+    # Validating column name on the given dataset
     if col1 not in df.columns:
-        print(f'Coluna {col1} não presente na base')
+        print(f'There is no column {col1} on the given dataset')
         return
     if col2 not in df.columns:
-        print(f'Coluna {col2} não presente na base')
+        print(f'There is no column {col2} on the given dataset')
         return
 
-    # Retornando valores e labels para as duas camadas do gráfico
+    # Returning labels ans values
     first_layer_donut = df.groupby(col1).count().iloc[:, 0]
     first_layer_values = first_layer_donut.values
     second_layer_donut = df.groupby([col1, col2]).count().iloc[:, 0]
     second_layer_values = second_layer_donut.values
     col2_index = df.groupby(col2).count().iloc[:, 0].index
     
-    # Criando DataFrame com dados da segunda camada
+    # Creating a DataFrame with outter layer data
     second_layer_df = pd.DataFrame(second_layer_donut.index.values)
     second_layer_df['first_index'] = second_layer_df[0].apply(lambda x: x[0])
     second_layer_df['second_index'] = second_layer_df[0].apply(lambda x: x[1])
     second_layer_df['values'] = second_layer_donut.values
 
-    # Retornando e mapeando labels para a legenda
+    # Returning labels and mapping into the categories
     if 'label_names_col1' in kwargs:
         try:
             labels_col1 = first_layer_donut.index.map(kwargs['label_names_col1'])
         except Exception as e:
-            print(f'Erro ao mapear o dicionário label_names_col1 na coluna {col1}. Exception: {e}')
+            print(f'Error on mapping the dict label_names on column {col1}. Exception: {e}')
     else:
         labels_col1 = first_layer_donut.index
 
@@ -355,22 +356,22 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
         try:
             labels_col2 = second_layer_df['second_index'].map(kwargs['label_names_col2'])
         except Exception as e:
-            print(f'Erro ao mapear o dicionário label_names_col2 na coluna {col2}. Exception: {e}')
+            print(f'Error on mapping the dict label_names on column {col2}. Exception: {e}')
     else:
         labels_col2 = second_layer_df['second_index']
     
-    # Cores para a plotagem
+    # Colors for the chart
     color_list = ['darkslateblue', 'crimson', 'lightseagreen', 'silver', 'lightskyblue', 'lightcoral']
     colors1 = kwargs['colors1'] if 'colors1' in kwargs else color_list[:len(label_names_col1)]
     colors2 = kwargs['colors2'] if 'colors2' in kwargs else color_list[-len(col2_index):]
 
-    # Parâmetros de plotagem
+    # Setting up parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (8, 8)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     circle_radius = kwargs['circle_radius'] if 'circle_radius' in kwargs else 0.55
     circle_radius_color = kwargs['circle_radius_color'] if 'circle_radius_color' in kwargs else 'white'
 
-    # Plotando gráfico de rosca
+    # Plotting a donut chart twice
     center_circle = plt.Circle((0, 0), circle_radius, color=circle_radius_color)
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -380,28 +381,28 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
                                          autopct=make_autopct(second_layer_values), pctdistance=0.55)
     ax.add_artist(center_circle)
 
-    # Configurando argumentos do texto central
+    # Setting central text information
     text = kwargs['text'] if 'text' in kwargs else ''
     text_kwargs = dict(size=20, fontweight='bold', va='center')
     ax.text(0, 0, text, ha='center', **text_kwargs)
     
-    # Definindo título
-    title = kwargs['title'] if 'title' in kwargs else f'Gráfico Duplo de Rosca para ${col1}$ e ${col2}$'
+    # Setting chart title
+    title = kwargs['title'] if 'title' in kwargs else f'Double Donut Chart for Features \n{col1} and {col2}'
     ax.set_title(title, size=16, color='dimgrey')
 
-    # Parâmetros de customização do gráfico gerado
+    # Customizing the graph
     autotexts_size = kwargs['autotexts_size'] if 'autotexts_size' in kwargs else 14
     autotexts_color = kwargs['autotexts_color'] if 'autotexts_color' in kwargs else 'black'
     texts_size = kwargs['texts_size'] if 'texts_size' in kwargs else 14
     texts_color = kwargs['texts_color'] if 'texts_stexts_colorize' in kwargs else 'black'
 
-    # Customizando rótulos
+    # Setting up the data labels on the cart
     plt.setp(autotexts1, size=autotexts_size, color=autotexts_color)
     plt.setp(texts1, size=texts_size, color=texts_color)
     plt.setp(autotexts2, size=autotexts_size, color=autotexts_color)
     plt.setp(texts2, size=texts_size, color=texts_color)
     
-    # Customizando legendas
+    # Setting and positioning graph legend
     custom_lines = []
     for c1 in colors1:
         custom_lines.append(Line2D([0], [0], color=c1, lw=4))
@@ -410,7 +411,7 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
     all_labels = list(labels_col1) + list(np.unique(labels_col2))
     ax.legend(custom_lines, labels=all_labels, fontsize=12, loc='upper left')
 
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col1}_{col2}_donutchart.png'
@@ -418,50 +419,50 @@ def plot_double_donut_chart(df, col1, col2, **kwargs):
 
 def plot_countplot(df, col, **kwargs):
     """
-    Função responsável por plotar um gráfico de barras de volumetrias (countplot)
+    Creates a simple countplot using a dataset and a column name
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col: referência de coluna a ser plotada [type: string]
-    :param **kwargs: parâmetros adicionais da função   
-        :arg top: filtro de top categorias a serem plotadas [type: int, default=-1]
-        :arg orient: horizontal ou vertical [type: string, default='h']
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg order: flag para ordenação dos dados [type: bool, default=True]
-        :arg hue: parâmetro hue para quebra de plotagem do método countplot [type: string, default=None]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'Volumetria para a variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg size_label: tamanho do rótulo [type: int, default=14]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de uma plotagem de volumetrias (barras)
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col: column to be used as target of the countplot [type: string]
+    :param **kwargs: additional parameters
+        :arg top: filter the top N categories on the chart [type: int, default=-1]
+        :arg figsize: figure dimension [type: tuple, default=(10, 7)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]   
+        :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']
+        :arg order: sorts the categories (seaborn order function arg) [type: bool, default=True]
+        :arg orient: horizontal or vertical orientation [type: string, default='h']
+        :arg title: chart title [type: string, default=f'Countplot for Feature {col}']
+        :arg size_title: title size [type: int, default=16]
+        :arg size_label: label size[type: int, default=14]
+        :arg label_names: custom labels [type: dict, default=value_counts().index]    
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}_countplot.png']
 
-    Aplicação
+    Return
+    -------
+    This function returns nothing besides plotting the countplot chart
+
+    Application
     ---------
     plot_countplot(df=df, col='column')
     """
     
-    # Validando presença da coluna na base
+    # Validating column name on the given dataset
     if col not in df.columns:
-        print(f'Coluna {col} não presente na base')
+        print(f'There is no column {col} on the given dataset')
         return
     
-    # Retornando parâmetros de filtro de colunas
+    # Filtering categories if applicable
     top = kwargs['top'] if 'top' in kwargs else -1
     if top > 0:
         cat_count = df[col].value_counts()
         top_categories = cat_count[:top].index
         df = df[df[col].isin(top_categories)]
         
-    # Parâmetros de plotagem
+    # Setting up parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     hue = kwargs['hue'] if 'hue' in kwargs else None
@@ -469,7 +470,7 @@ def plot_countplot(df, col, **kwargs):
     order = df[col].value_counts().index if 'order' in kwargs and bool(kwargs['order']) else None
     orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
         
-    # Definindo orientação
+    # Setting chart orientation
     if orient == 'h':
         x = None
         y = col
@@ -477,79 +478,81 @@ def plot_countplot(df, col, **kwargs):
         x = col
         y = None
     
-    # Criando figura e aplicando countplot
+    # Creating figure and applying countplot function
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     sns.countplot(data=df, ax=ax, x=x, y=y, hue=hue, order=order, palette=palette)
 
-    # Retornando parâmetros de formatação da plotagem
-    title = kwargs['title'] if 'title' in kwargs else f'Volumetria de Dados por {col}'
+    # Returning customization parameters
+    title = kwargs['title'] if 'title' in kwargs else f'Countplot for Feature {col}'
     size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
     size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 14
     label_names = kwargs['label_names'] if 'label_names' in kwargs else None
     
-    # Formatando plotagem
+    # Customizing chart
     ax.set_title(title, size=size_title, pad=20)
     format_spines(ax, right_border=False)
 
-    # Inserindo rótulo de percentual e modificando labels
+    # Inserting percentage and changing labels wherever orient is equel to 'v'
     ncount = len(df)
     if x:
-        # Rótulos
+        # Data labels
         for p in ax.patches:
             x = p.get_bbox().get_points()[:, 0]
             y = p.get_bbox().get_points()[1, 1]
             try:
                 ax.annotate('{}\n{:.1f}%'.format(int(y), 100. * y / ncount), (x.mean(), y), 
                             ha='center', va='bottom', size=size_labels)
-            except ValueError as ve: # Erro por divisão por zero em entradas inexistentes pela quebra
+            except ValueError as ve: # Error by zero division by non existent values
                 continue
         
-        # Labels
+        # Label names
         if 'label_names' in kwargs:
             labels_old = ax.get_xticklabels()
             labels = [l.get_text() for l in labels_old]
             try:
-                # Convertendo textos antes do mapeamento
+                # Converting text before mapping
                 if type(list(kwargs['label_names'].keys())[0]) is int:
                     labels = [int(l) for l in labels]
                 elif type(list(kwargs['label_names'].keys())[0]) is float:
                     labels = [float(l) for l in labels]
                 
-                # Mapeando rótulos customizados
+                # Mapping custom labels
                 labels = pd.DataFrame(labels)[0].map(kwargs['label_names'])
                 ax.set_xticklabels(labels)
             except Exception as e:
-                print(f'Erro ao mapear labels na coluna {col}. Exception: {e}')
+                print(f'Error on mapping the dict label_names on column {col}. Exception: {e}')
+    
+    # Inserting percentage and changing labels wherever orient is equel to 'h'
     else:
-        # Rótulos
+        # Data labels
         for p in ax.patches:
             x = p.get_bbox().get_points()[1, 0]
             y = p.get_bbox().get_points()[:, 1]
             try:
                 ax.annotate('{} ({:.1f}%)'.format(int(x), 100. * x / ncount), (x, y.mean()), 
                             va='center', size=size_labels)
-            except ValueError as ve: # Erro por divisão por zero em entradas inexistentes pela quebra
+            except ValueError as ve: # Error by zero division by non existent values
                 continue
 
-        # Labels
+        # Label names
         if 'label_names' in kwargs:
             labels_old = ax.get_yticklabels()
             labels = [l.get_text() for l in labels_old]
             try:
-                # Convertendo textos antes do mapeamento
+                # Converting text before mapping
                 if type(list(kwargs['label_names'].keys())[0]) is int:
                     labels = [int(l) for l in labels]
                 elif type(list(kwargs['label_names'].keys())[0]) is float:
                     labels = [float(l) for l in labels]
                 
-                # Mapeando rótulos customizados
+                # Mapping custom labels
                 labels = pd.DataFrame(labels)[0].map(kwargs['label_names'])
                 ax.set_yticklabels(labels)
             except Exception as e:
-                print(f'Erro ao mapear labels na coluna {col}. Exception: {e}')
+                print(f'Error on mapping the dict label_names on column {col}. Exception: {e}')
 
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_countplot.png'
@@ -557,105 +560,107 @@ def plot_countplot(df, col, **kwargs):
 
 def plot_pct_countplot(df, col, hue, **kwargs):
     """
-    Função responsável por plotar um gráfico de barras agrupadas com percentuais representativos
+    Creates a percentage countplot (grouped bar chart) using a dataset and a column name
     
-    Parâmetros
+    Parameters
     ----------
-    :param df: base de dados utilizada na plotagem [type: pd.DataFrame]
-    :param col: referência de coluna a ser plotada [type: string]
-    :param hue: parâmetro hue para quebra de plotagem [type: string]
-    :param **kwargs: parâmetros adicionais da função   
-        :arg top: filtro de top categorias a serem plotadas [type: int, default=-1]
-        :arg orient: horizontal ou vertical [type: string, default='h']
-        :arg figsize: dimensões da figura de plotagem [type: tuple, default=(8, 8)]
-        :arg ax: eixo do matplotlib em caso de criação externa da figure [type: mpl.Axes, default=None]
-        :arg label_names: labels personalizados para os rótulos [type: dict, default=value_counts().index]
-        :arg palette: paleta de cores utilizada na plotagem [type: string, default='rainbow']
-        :arg title: título do gráfico [type: string, default=f'Volumetria para a variável {col}']
-        :arg size_title: tamanho do título [type: int, default=16]
-        :arg save: flag indicativo de salvamento da imagem gerada [type: bool, default=None]
-        :arg output_path: caminho de output da imagem a ser salva [type: string, default='output/']
-        :arg img_name: nome do arquivo .png a ser gerado [type: string, default=f'{col}_pct_countplot.png']
-    
-    Retorno
-    -------
-    Essa função não retorna nenhum parâmetro além de uma plotagem de representatividade por grupo
+    :param df: dataset used for plotting [type: pd.DataFrame]
+    :param col: column to be used as target of the countplot [type: string]
+    :param **kwargs: additional parameters
+        :arg top: filter the top N categories on the chart [type: int, default=-1]
+        :arg figsize: figure dimension [type: tuple, default=(10, 7)]
+        :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]   
+        :arg palette: color palette to be used on the chart [type: string, default='rainbow']       
+        :arg orient: horizontal or vertical orientation [type: string, default='h']
+        :arg title: chart title [type: string, default=f'Countplot for Feature {col}']
+        :arg size_title: title size [type: int, default=16]
+        :arg size_label: label size[type: int, default=14]
+        :arg label_names: custom labels [type: dict, default=value_counts().index]    
+        :arg save: flag for saving the image created [type: bool, default=None]
+        :arg output_path: path for image to be saved [type: string, default='output/']
+        :arg img_name: filename for image to be saved [type: string, default=f'{col}_countplot.png']
 
-    Aplicação
+    Return
+    -------
+    This function returns nothing besides plotting the countplot chart
+
+    Application
     ---------
     plot_countplot(df=df, col='column')
     """
     
-    # Validando presença da coluna na base
+    # Validating column name on the given dataset
     if col not in df.columns:
-        print(f'Coluna {col} não presente na base')
+        print(f'There is no column {col} on the given dataset')
         return
     
-    # Validando presença da coluna hue na base
+    # Validating hue column on the given dataset
     if hue not in df.columns:
-        print(f'Coluna {hue} não presente na base')
+        print(f'There is no column {hue} on the given dataset')
         return
     
-    # Retornando parâmetros de filtro de colunas
+    # Filtering categories if applicable
     top = kwargs['top'] if 'top' in kwargs else -1
     if top > 0:
         cat_count = df[col].value_counts()
         top_categories = cat_count[:top].index
         df = df[df[col].isin(top_categories)]
         
-    # Retornando parâmetros de plotagem
+    # Setting up parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
     palette = kwargs['palette'] if 'palette' in kwargs else 'rainbow'
     kind = 'bar' if 'orient' in kwargs and kwargs['orient'] == 'v' else 'barh'
-    title = kwargs['title'] if 'title' in kwargs else f'Representatividade de {hue} para a coluna {col}'
+    title = kwargs['title'] if 'title' in kwargs else f'Grouped Percentage Countplot for Feature \n{col}'
     size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
     
-    # Realizando quebra agrupada das colunas
+    # Grouping column using crosstab function
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     col_to_hue = pd.crosstab(df[col], df[hue])
     col_to_hue.div(col_to_hue.sum(1).astype(float), axis=0).plot(kind=kind, stacked=True, ax=ax, 
                                                                  colormap=palette)
     
-    # Customizando gráfico
+    # Customizing title
     ax.set_title(title, size=size_title, pad=20)
 
-    # Customizando rótulos
+    # Setting labels if kind is equal to barh chart
     if kind == 'barh':
         if 'label_names' in kwargs:
             labels_old = ax.get_xticklabels()
             labels = [l.get_text() for l in labels_old]
             try:
-                # Convertendo textos antes do mapeamento
+                # Converting text before mapping
                 if type(list(kwargs['label_names'].keys())[0]) is int:
                     labels = [int(l) for l in labels]
                 elif type(list(kwargs['label_names'].keys())[0]) is float:
                     labels = [float(l) for l in labels]
                 
-                # Mapeando rótulos customizados
+                # Mapping custom labels
                 labels = pd.DataFrame(labels)[0].map(kwargs['label_names'])
                 ax.set_xticklabels(labels)
             except Exception as e:
-                print(f'Erro ao mapear labels na coluna {col}. Exception: {e}')
+                print(f'Error on mapping labels on column {col}. Exception: {e}')
+    
+    # Setting labels if kind is equal to barh chart
     else:
         if 'label_names' in kwargs:
             labels_old = ax.get_yticklabels()
             labels = [l.get_text() for l in labels_old]
             try:
-                # Convertendo textos antes do mapeamento
+                # Converting text before mapping
                 if type(list(kwargs['label_names'].keys())[0]) is int:
                     labels = [int(l) for l in labels]
                 elif type(list(kwargs['label_names'].keys())[0]) is float:
                     labels = [float(l) for l in labels]
                 
-                # Mapeando rótulos customizados
+                # Mapping custom labels
                 labels = pd.DataFrame(labels)[0].map(kwargs['label_names'])
                 ax.set_yticklabels(labels)
             except Exception as e:
-                print(f'Erro ao mapear labels na coluna {col}. Exception: {e}')
+                print(f'Error on mapping labels on column {col}. Exception: {e}')
 
-    # Verificando salvamento da imagem
+    # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_{hue}_pctcountplot.png'
