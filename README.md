@@ -40,6 +40,8 @@ The definition is clear: `xplotter` is a python library created for making the E
 * _Improve analytics by analysing trends and distributions of your data_
 * _Rich documentation to explore_
 
+___
+
 ### Package structure
 
 After viewing some of benefits of using `xplotter` in a data project, it's also important to see how the package was built and how it's organized. At the moment, there are two modules on the xplotter package folder and they are explained on the table below:
@@ -48,6 +50,8 @@ After viewing some of benefits of using `xplotter` in a data project, it's also 
 | :---------: | :-----------------------------------------------------------: | :---------------: | :--------------------: |
 | `formatter` | Auxiliar functions for formatting charts                      |         3         |         ~150           |
 | `insights`  | Functions for exploring data in a wide range of possibilities |        14         |         ~1800          |
+
+___
 
 ### Features
 
@@ -91,6 +95,8 @@ At this moment, all the features available in the xplotter package are:
 | `insights`  | `plot_multiple_dist_scatterplot` | Plots a rich graph that joins a distribution and a scatterplot                             |
 | `insights`  | `plot_multiple_countplots`       | Plots multiple formatted countplot based on a list of columns of a given dataset           |
 | `insights`  | `plot_evolutionplot`             | Plots an evolution plot in a line chart                                                    |
+
+___
 
 ## Installing the package
 
