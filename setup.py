@@ -37,7 +37,7 @@ reqs = [str(ir.req) for ir in install_reqs]"""
 # Criando setup
 setup(
     name='xplotter',
-    version='0.0.2',
+    version='0.0.3',
     author='Thiago Panini',
     author_email='thipanini94@gmail.com',
     packages=find_packages(),
@@ -47,7 +47,7 @@ setup(
         'seaborn==0.11.1',
     ],
     license='MIT',
-    description='Explore visual insights from data in an easy, intituitive way and with few lines of code.',
+    description='Explore visual insights from data in an easy and intituitive way with few lines of code.',
     long_description=__long_description__,
     long_description_content_type="text/markdown",
     url='https://github.com/ThiagoPanini/xplotter',
