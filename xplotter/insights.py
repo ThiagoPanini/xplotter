@@ -106,6 +106,7 @@ def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
 ---------------------------------------------------
 """
 
+# Simple donut chart
 def plot_donut_chart(df, col, **kwargs):
     """
     Creates a custom donut chart for a specific column
@@ -203,6 +204,7 @@ def plot_donut_chart(df, col, **kwargs):
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_donutchart.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+# Simple pie chart
 def plot_pie_chart(df, col, **kwargs):
     """
     Creates a custom pie chart for a specific column
@@ -293,9 +295,10 @@ def plot_pie_chart(df, col, **kwargs):
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_piechart.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
+# Double donut chart using two columns
 def plot_double_donut_chart(df, col1, col2, **kwargs):
     """
-    Creates a "double" custom donut chart for two columns of a giben dataset
+    Creates a "double" custom donut chart for two columns of a given dataset
     
     Parameters
     ----------
@@ -706,7 +709,7 @@ def plot_distplot(df, col, kind='dist', **kwargs):
         :arg hue: breaks the chart into another category (seaborn hue function arg) [type: string, default=None]
         :arg figsize: figure dimension [type: tuple, default=(10, 7)]
         :arg ax: matplotlib axis in case of external figure defition [type: mpl.Axes, default=None]
-        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=False]
+        :arg hist: plots histogram bars on the chart (seaborn's parameter) [type: bool, default=True]
         :arg kde: plots kde line on the chart (seaborn's parameter) [type: bool, default=True]
         :arg rug: plots rug at the bottom of the the chart (seaborn's parameter) [type: bool, default=False]
         :arg shade: fills the area below distribution curve (seaborn's parameter) [type: bool, default=True]
@@ -746,7 +749,7 @@ def plot_distplot(df, col, kind='dist', **kwargs):
     # Extracting chart parameters
     figsize = kwargs['figsize'] if 'figsize' in kwargs else (10, 7)
     ax = kwargs['ax'] if 'ax' in kwargs else None
-    hist = kwargs['hist'] if 'hist' in kwargs else False
+    hist = kwargs['hist'] if 'hist' in kwargs else True
     kde = kwargs['kde'] if 'kde' in kwargs else True
     rug = kwargs['rug'] if 'rug' in kwargs else False
     shade = kwargs['shade'] if 'shade' in kwargs else True
@@ -1035,14 +1038,14 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     order = df[col].value_counts().index if 'order' in kwargs and bool(kwargs['order']) else None
     orient = kwargs['orient'] if 'orient' in kwargs and kwargs['orient'] in ['h', 'v'] else 'v'
     dist_kind = kwargs['dist_kind'] if 'dist_kind' in kwargs else 'dist'
-    title1 = kwargs['title1'] if 'title1' in kwargs else f'Volumetria de dados por {cat_col}'
-    title2 = kwargs['title2'] if 'title2' in kwargs else f'{aggreg.title()} de {value_col} por {cat_col}'
-    title3 = kwargs['title3'] if 'title3' in kwargs else 'Parâmetros Estatísticos'
-    title4 = kwargs['title4'] if 'title4' in kwargs else f'{dist_kind.title()}plot para {value_col}'
+    title1 = kwargs['title1'] if 'title1' in kwargs else f'Countplot for {cat_col}'
+    title2 = kwargs['title2'] if 'title2' in kwargs else f'{value_col} {aggreg.title()} by {cat_col}'
+    title3 = kwargs['title3'] if 'title3' in kwargs else 'Statistical Analysis'
+    title4 = kwargs['title4'] if 'title4' in kwargs else f'{dist_kind.title()}plot for {value_col}'
     size_title = kwargs['size_title'] if 'size_title' in kwargs else 16
     size_labels = kwargs['size_labels'] if 'size_labels' in kwargs else 12
     top = kwargs['top'] if 'top' in kwargs else -1
-    
+
     # Validating distribution kind
     possible_kinds = ['dist', 'kde', 'box', 'boxen', 'strip']
     if dist_kind not in possible_kinds:
@@ -1082,16 +1085,16 @@ def plot_cat_aggreg_report(df, cat_col, value_col, aggreg='mean', **kwargs):
     # Handling description text positioning
     desc_text_x_pos = kwargs['desc_text_x_pos'] if 'desc_text_x_pos' in kwargs else 0.50
     desc_text_y_pos = kwargs['desc_text_y_pos'] if 'desc_text_y_pos' in kwargs else 0.75
-    tmp_desc_text = f'A statistical approac for {value_col}\nusing the data available'
+    tmp_desc_text = f'A statistical approach for {value_col}\nusing the data available'
     desc_text = kwargs['desc_text'] if 'desc_text' in kwargs else tmp_desc_text
     desc_text_font = kwargs['desc_text_font'] if 'desc_text_font' in kwargs else 12
     
     # Handling positioning of statistical text titles
     stat_title_x_pos = kwargs['stat_title_x_pos'] if 'stat_title_x_pos' in kwargs else 0.17
     stat_title_y_pos = kwargs['stat_title_y_pos'] if 'stat_title_y_pos' in kwargs else desc_text_y_pos-.2
-    stat_title_mean = kwargs['stat_title_mean'] if 'stat_title_mean' in kwargs else 'Média'
-    stat_title_median = kwargs['stat_title_median'] if 'stat_title_median' in kwargs else 'Mediana'
-    stat_title_std = kwargs['stat_title_std'] if 'stat_title_std' in kwargs else 'Desv Pad'
+    stat_title_mean = kwargs['stat_title_mean'] if 'stat_title_mean' in kwargs else 'Mean'
+    stat_title_median = kwargs['stat_title_median'] if 'stat_title_median' in kwargs else 'Median'
+    stat_title_std = kwargs['stat_title_std'] if 'stat_title_std' in kwargs else 'Std Dev'
     stat_title_font = kwargs['stat_title_font'] if 'stat_title_font' in kwargs else 14
     inc_x_pos = kwargs['inc_x_pos'] if 'inc_x_pos' in kwargs else 18
     
