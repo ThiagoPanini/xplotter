@@ -37,14 +37,14 @@ reqs = [str(ir.req) for ir in install_reqs]"""
 # Criando setup
 setup(
     name='xplotter',
-    version='0.0.3',
+    version='0.0.4',
     author='Thiago Panini',
     author_email='thipanini94@gmail.com',
     packages=find_packages(),
     install_requires=[
-        'pandas==1.1.5',
-        'matplotlib==3.2.1',
-        'seaborn==0.11.1',
+        'pandas>=1.1.5',
+        'matplotlib>=3.2.1',
+        'seaborn>=0.11.1',
     ],
     license='MIT',
     description='Explore visual insights from data in an easy and intituitive way with few lines of code.',
