@@ -833,7 +833,7 @@ def plot_distplot(df, col, kind='dist', **kwargs):
     # Saving image if applicable
     if 'save' in kwargs and bool(kwargs['save']):
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
-        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}{hue}_{kind}plot.png'
+        img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{col}_{kind}plot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
 
 
