@@ -23,8 +23,10 @@
 - [About xplotter](#about-xplotter)
   - [Package structure](#package-structure)
   - [Features](#features)
-- [Installing the package](#instalação)
-- [Usage examples](#utilização)
+- [Installing the package](#installing-the-package)
+- [Examples](#examples)
+  - [Insights module](#insights-module)
+  - [Usage around the world](#usage-around-the-world)
 
 ___
 
@@ -128,6 +130,16 @@ The xplotter package is built in a layer above some other python packages like m
 Installing collected packages: six, pytz, python-dateutil, pyparsing, numpy, kiwisolver, cycler, scipy, pandas, matplotlib, seaborn, xplotter
 Successfully installed cycler-0.10.0 kiwisolver-1.3.1 matplotlib-3.2.1 numpy-1.20.2 pandas-1.1.5 pyparsing-2.4.7 python-dateutil-2.8.1 pytz-2021.1 scipy-1.6.3 seaborn-0.11.1 six-1.15.0 xplotter-0.0.3
 ```
+___
+
+## Examples
+
+In this session, you will see some usage examples of xplotter on real problems using data. After installing the package, it's important to know how to use it and how to extract the real power of it.
+
+### Insights Module
+
+As you could see by this time, the insights module from xplotter have a lot of functions that can directly deliver
+
 
 ___
 **_Work in progress_**
