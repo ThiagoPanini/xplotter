@@ -27,6 +27,8 @@
 - [Examples](#examples)
   - [Insights module](#insights-module)
   - [Usage around the world](#usage-around-the-world)
+- [Contribution](#contribution)
+- [Social Media](#social-media)
 
 ___
 
@@ -185,7 +187,9 @@ The xplotter python package is an open source implementation and the more people
 
 Thank you very much for reaching this and it will be a pleasure to have you as xplotter user or developer.
 
-## Developer Social Media
+___
+
+## Social Media
 
 Follow me on LinkedIn: https://www.linkedin.com/in/thiago-panini/
 See my other Python packages: https://github.com/ThiagoPanini
