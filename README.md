@@ -181,7 +181,7 @@ For being easy and simple, xplotter can have alot of applications. One of the mo
 
 ___
 
-## Constribution
+## Contribution
 
 The xplotter python package is an open source implementation and the more people use it, the more happy the developers will be. So if you want to contribute with xplotter, please feel free to follow the best practices for implementing coding on this github repository through creating new branches, making merge requests and pointig out whenever you think there is a new topic to explore or a bug to be fixed.
 
