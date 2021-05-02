@@ -104,7 +104,7 @@ ___
 
 The last version of `xplotter` package are published and available on [PyPI repository](https://pypi.org/project/xplotter/)
 
-> :pushpin: **Nota:** as a good practice for every Python project, the creation of a <a href="https://realpython.com/python-virtual-environments-a-primer/">virtual environment</a> is needed to get a full control of dependencies and third part packages on your code. By this way, the code below can be used for creating a new venv on your OS.
+> :pushpin: **Note:** as a good practice for every Python project, the creation of a <a href="https://realpython.com/python-virtual-environments-a-primer/">virtual environment</a> is needed to get a full control of dependencies and third part packages on your code. By this way, the code below can be used for creating a new venv on your OS.
 > 
 
 ```bash
@@ -138,9 +138,54 @@ In this session, you will see some usage examples of xplotter on real problems u
 
 ### Insights Module
 
-As you could see by this time, the insights module from xplotter have a lot of functions that can directly deliver
+As you could see by this time, the insights module from xplotter have a lot of functions that can deliver something like "charts as a code". It's just a funy way to describe how the components and the tools inside this module can make life of a data explorer easier. To ilustrate that, the code below reads the titanic dataset directly from seaborn and plots a custom donut chart for _survived_ feature.
 
+```python
+from xplotter.insights import plot_donut_chart
+import seaborn as sns
+
+titanic = seaborn.load_dataset('titanic')
+plot_donut_chart(df=titanic, col='survived')
+```
+This outputs the following figure:
+
+<div align="center">
+   <img src="https://i.imgur.com/0pia2bm.png" width=450 height=450>
+</div>
+
+Another example uses the iris dataset also read from seaborn `load_dataset()` function. In this case, we can use the `plot_distplot()` xplotter funcion for visualize the distribution of sepal_length feature for each species in a fast and direct way:
+
+```python
+iris = seaborn.load_dataset('iris')
+plot_distplot(df=iris, col='sepal_length', hue='species')
+```
+
+Let's see the beautiful distribution plot the function above generated for you:
+
+<div align="center">
+   <img src="https://i.imgur.com/Q2A2mgk.png" height=450 width=700>
+</div>
+
+There are much more you can do using insights module from xplotter package. It's a hole world to be explore and a bunch of business questions that can be answeared through visualization charts easy plotted through those already coded functions. In the next topic, this documentation will share with you some of real world implementations using xplotter.
+___
+
+### Usage Around the World
+
+For being easy and simple, xplotter can have alot of applications. One of the most famous one is the notebook <a href="https://www.kaggle.com/thiagopanini/exploring-and-predicting-survival-on-titanic/comments">Titanic Dataset Exploration</a> posted on Kaggle by <a href="https://www.kaggle.com/thiagopanini">Thiago Panini</a>. This well written notebook uses the insight module for plotting beautiful charts and building a really complete Exploratory Data Analysis proccess and, by now, it achieve a <b>bronze medal</b> with 32 upvotes by Kaggle's community and a incredible mark of more than 1,600 views!
+
+<div align="center">
+   <img src="https://i.imgur.com/q1DnARQ.png" height=90 width=900>
+</div>
 
 ___
-**_Work in progress_**
-___
+
+## Constribution
+
+The xplotter python package is an open source implementation and the more people use it, the more happy the developers will be. So if you want to contribute with xplotter, please feel free to follow the best practices for implementing coding on this github repository through creating new branches, making merge requests and pointig out whenever you think there is a new topic to explore or a bug to be fixed.
+
+Thank you very much for reaching this and it will be a pleasure to have you as xplotter user or developer.
+
+## Developer Social Media
+
+Follow me on LinkedIn: https://www.linkedin.com/in/thiago-panini/
+See my other Python packages: https://github.com/ThiagoPanini
