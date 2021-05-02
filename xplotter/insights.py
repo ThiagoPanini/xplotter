@@ -1377,6 +1377,7 @@ def plot_multiple_distplots(df, col_list, n_cols=3, kind='dist', **kwargs):
     i, j = 0, 0
     
     # Extracting additional parameters for the charts
+    hue = kwargs['hue'] if 'hue' in kwargs else None
     hist = kwargs['hist'] if 'hist' in kwargs else True
     kde = kwargs['kde'] if 'kde' in kwargs else True
     rug = kwargs['rug'] if 'rug' in kwargs else False
