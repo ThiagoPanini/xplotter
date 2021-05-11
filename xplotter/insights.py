@@ -72,7 +72,7 @@ def save_fig(fig, output_path, img_name, tight_layout=True, dpi=300):
     This function returns nothing besides the image saved on the given path
 
     Application
-    ---------
+    -----------
     fig, ax = plt.subplots()
     save_fig(fig, output_file='image.png')
     """
