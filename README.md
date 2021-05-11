@@ -15,6 +15,15 @@
   ![PyPI - Status](https://img.shields.io/pypi/status/xplotter)
 
 </div>
+
+<div align="center">  
+  
+  ![Downloads](https://img.shields.io/pypi/dm/xplotter?color=darkblue)
+  ![Downloads](https://img.shields.io/pypi/dw/xplotter?color=blue)
+  ![Downloads](https://img.shields.io/pypi/dd/xplotter?color=lightblue)
+
+</div>
+
 <br/>
 
 
