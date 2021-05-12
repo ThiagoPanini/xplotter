@@ -182,12 +182,25 @@ ___
 
 ### Usage Around the World
 
-For being easy and simple, xplotter can have alot of applications. One of the most famous one is the notebook <a href="https://www.kaggle.com/thiagopanini/exploring-and-predicting-survival-on-titanic/comments">Titanic Dataset Exploration</a> posted on Kaggle by <a href="https://www.kaggle.com/thiagopanini">Thiago Panini</a>. This well written notebook uses the insight module for plotting beautiful charts and building a really complete Exploratory Data Analysis proccess and, by now, it achieve a <b>bronze medal</b> with 32 upvotes by Kaggle's community and a incredible mark of more than 1,600 views!
+* For being easy and simple, xplotter can have alot of applications. One of the most famous one is the notebook [Titanic Dataset Exploration](https://www.kaggle.com/thiagopanini/exploring-and-predicting-survival-on-titanic/comments) posted on Kaggle by [Thiago Panini](https://www.kaggle.com/thiagopanini). This well written notebook uses the insight module for plotting beautiful charts and building a really complete Exploratory Data Analysis proccess and, by now, it achieved a <b>bronze medal</b> with 34 upvotes by Kaggle's community and a incredible mark of more than 1,600 views!
 
 <div align="center">
-   <img src="https://i.imgur.com/q1DnARQ.png" height=90 width=900>
+   <img src="https://i.imgur.com/J7ZcTD9.png">
 </div>
 
+* Another example is the Kaggle's notebook [Exploring and Modeling Housing Prices](https://www.kaggle.com/thiagopanini/exploring-and-modeling-housing-prices) built by [Thiago Panini](https://www.kaggle.com/thiagopanini) with `xplotter` and `mlcomposer` for extracting useful insights from housing prices data and also building a complete workflow for training and evaluating linear regression models. The notebook achieved a **silver medal** with 32 upvotes by Kaggle's community and almost 2,000 views!
+
+<div align="center">
+   <img src="https://i.imgur.com/COqermc.png">
+</div>
+
+* Still on Kaggle, there is the excellent [Presenting xplotter and mlcomposer on TPS May21]() that is part of the Tabular Playground Series competition that allows users to user data to explore techniques and knowlege. On the linked notebook, the user [Thiago Panini](https://www.kaggle.com/thiagopanini) explored some tools of `xplotter` and `mlcomposer` for building up an analysis of a Multiclass Classification model. People seems to like those packages: this recent notebook achieved a **bronze medal** with 16 upvotes with just 143 views! A good upvote rate!
+
+<div align="center">
+   <img src="https://i.imgur.com/zRQy5qI.png">
+</div>
+
+_Obs: the views, upvotes and maybe the medals information may be different depending on when you are looking at this README_
 ___
 
 ## Contribution
