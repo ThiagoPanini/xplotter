@@ -521,7 +521,7 @@ def plot_countplot(df, col, **kwargs):
             x = p.get_bbox().get_points()[:, 0]
             y = p.get_bbox().get_points()[1, 1]
             try:
-                ax.annotate('{}\n{:.1f}%'.format(int(y), 100. * y / ncount), (x.mean(), y), 
+                ax.annotate('{}\n{}%'.format(int(y), int(round(100 * y / ncount, 0))), (x.mean(), y), 
                             ha='center', va='bottom', size=size_labels)
             except ValueError as ve: # Error by zero division by non existent values
                 continue
@@ -1801,3 +1801,15 @@ def plot_evolutionplot(df, x, y, agg=True, agg_functions=['count', 'sum', 'mean'
         output_path = kwargs['output_path'] if 'output_path' in kwargs else 'output/'
         img_name = kwargs['img_name'] if 'img_name' in kwargs else f'{x}_{y}evlplot.png'
         save_fig(fig=fig, output_path=output_path, img_name=img_name)
+
+
+"""
+---------------------------------------------------
+------------- 3. VISUAL TEXT ANALYSIS -------------
+          3.1 Wordclouds and ngram counts
+---------------------------------------------------
+"""
+
+#from utils.wordcloud import WordCloud
+
+
